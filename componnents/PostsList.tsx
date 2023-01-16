@@ -13,14 +13,14 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-import StudentModel, { Student } from "../model/StudentModel";
+import PostModel, { Post } from "../model/PostModel";
 
 const ListItem: FC<{
-  name: String;
+  title: String;
   id: String;
   image: String;
   onRowSelected: (id: String) => void;
-}> = ({ name, id, image, onRowSelected }) => {
+}> = ({ title, id, image, onRowSelected }) => {
   const onClick = () => {
     console.log("int he row: row was selected " + id);
     onRowSelected(id);
@@ -44,7 +44,7 @@ const ListItem: FC<{
         )}
 
         <View style={styles.listRowTextContainer}>
-          <Text style={styles.listRowName}>{name}</Text>
+          <Text style={styles.listRowName}>{title}</Text>
           <Text style={styles.listRowId}>{id}</Text>
         </View>
       </View>
@@ -52,29 +52,29 @@ const ListItem: FC<{
   );
 };
 
-const StudentList: FC<{ route: any; navigation: any }> = ({
+const PostList: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
   const onRowSelected = (id: String) => {
     console.log("in the list: row was selected " + id);
-    navigation.navigate("StudentDetails", { studentId: id });
+    navigation.navigate("PostsDetails", { postId: id });
   };
 
-  const [students, setStudents] = useState<Array<Student>>();
+  const [posts, setPosts] = useState<Array<Post>>();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
       console.log("focus");
-      let students: Student[] = [];
+      let posts: Post[] = [];
       try {
-        students = await StudentModel.getAllStudents();
-        console.log("fetching students complete");
+        posts = await PostModel.getAllPosts();
+        console.log("fetching posts complete");
       } catch (err) {
-        console.log("fail fetching students " + err);
+        console.log("fail fetching posts " + err);
       }
       console.log("fetching finish");
-      setStudents(students);
+      setPosts(posts);
     });
     return unsubscribe;
   });
@@ -82,11 +82,11 @@ const StudentList: FC<{ route: any; navigation: any }> = ({
   return (
     <FlatList
       style={styles.flatlist}
-      data={students}
-      keyExtractor={(student) => student.id.toString()}
+      data={posts}
+      keyExtractor={(post) => post.id.toString()}
       renderItem={({ item }) => (
         <ListItem
-          name={item.name}
+          title={item.title}
           id={item.id}
           image={item.image}
           onRowSelected={onRowSelected}
@@ -131,4 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StudentList;
+export default PostList;

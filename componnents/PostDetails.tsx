@@ -14,11 +14,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-const StudentDetails: FC<{ route: any; navigation: any }> = ({
+const PostDetails: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
-  const studentId = JSON.stringify(route.params.studentId);
+  const postId = JSON.stringify(route.params.postId);
 
   // useEffect(() => {
   //     navigation.setOptions({ title: 'new Title' + id });
@@ -27,9 +27,9 @@ const StudentDetails: FC<{ route: any; navigation: any }> = ({
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Details Screen</Text>
-      <Text>{studentId}</Text>
+      <Text>{postId}</Text>
     </View>
   );
 };
 
-export default StudentDetails;
+export default PostDetails;

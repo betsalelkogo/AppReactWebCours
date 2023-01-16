@@ -1,42 +1,45 @@
 import apiClient from "../api/ClientApi";
-import StudentApi from "../api/StudentApi";
+import PostApi from "../api/PostApi";
 import FormData from "form-data";
 
-export type Student = {
+export type Post = {
   id: String;
-  name: String;
+  title: String;
+  detail: String;
   image: String;
 };
 
-const getAllStudents = async () => {
-  console.log("getAllStudents()");
-  const res: any = await StudentApi.getAllStudents();
-  let data = Array<Student>();
+const getAllPosts = async () => {
+  console.log("getAllPosts()");
+  const res: any = await PostApi.getAllPosts();
+  let data = Array<Post>();
   if (res.data) {
     res.data.forEach((obj: any) => {
       // console.log("element: " + obj._id)
-      const st: Student = {
-        name: obj.name,
+      const pt: Post = {
+        title: obj.title,
+        detail: obj.deltail,
         id: obj._id,
         image: obj.avatarUrl,
       };
-      data.push(st);
+      data.push(pt);
     });
   }
   return data;
 };
 
-const addStudent = async (student: Student) => {
-  console.log("addStudent");
+const addPost = async (post: Post) => {
+  console.log("addPost");
   const data = {
-    _id: student.id,
-    name: student.name,
-    avatarUrl: student.image,
+    title: post.title,
+    detail: post.detail,
+    _id: post.id,
+    avatarUrl: post.image,
   };
   try {
-    const res = StudentApi.addStudent(data);
+    const res = PostApi.addPost(data);
   } catch (err) {
-    console.log("add student fail: " + err);
+    console.log("add post fail: " + err);
   }
 };
 
@@ -44,7 +47,7 @@ const uploadImage = async (imageURI: String) => {
   var body = new FormData();
   body.append("file", { name: "name", type: "image/jpeg", uri: imageURI });
   try {
-    const res = await StudentApi.uploadImage(body);
+    const res = await PostApi.uploadImage(body);
     if (!res.ok) {
       console.log("save failed " + res.problem);
     } else {
@@ -59,4 +62,4 @@ const uploadImage = async (imageURI: String) => {
   }
   return "";
 };
-export default { getAllStudents, addStudent, uploadImage };
+export default { getAllPosts, addPost, uploadImage };

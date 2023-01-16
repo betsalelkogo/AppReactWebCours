@@ -12,17 +12,17 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import StudentModel, { Student } from "../model/StudentModel";
+import PostModel, { Post } from "../model/PostModel";
 import * as ImagePicker from "expo-image-picker";
 
-const StudentAdd: FC<{ route: any; navigation: any }> = ({
+const PostAdd: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
   console.log("My app is running");
   const [id, setId] = useState("");
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
+  const [title, setTitle] = useState("");
+  const [detail, setDetail] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
 
   const askPermission = async () => {
@@ -65,22 +65,23 @@ const StudentAdd: FC<{ route: any; navigation: any }> = ({
 
   const onSaveCallback = async () => {
     console.log("save button was pressed");
-    const student: Student = {
+    const post: Post = {
       id: id,
-      name: name,
+      title: title,
+      detail: detail,
       image: "url",
     };
     try {
       if (avatarUri != "") {
         console.log("uploading image");
-        const url = await StudentModel.uploadImage(avatarUri);
-        student.image = url;
+        const url = await PostModel.uploadImage(avatarUri);
+        post.image = url;
         console.log("got url from upload: " + url);
       }
-      console.log("saving stundet");
-      await StudentModel.addStudent(student);
+      console.log("saving post");
+      await PostModel.addPost(post);
     } catch (err) {
-      console.log("fail adding studnet: " + err);
+      console.log("fail adding post: " + err);
     }
     navigation.goBack();
   };
@@ -114,23 +115,23 @@ const StudentAdd: FC<{ route: any; navigation: any }> = ({
           style={styles.input}
           onChangeText={setId}
           value={id}
-          placeholder={"Student ID"}
+          placeholder={"Post ID"}
         />
         <TextInput
           style={styles.input}
-          onChangeText={setName}
-          value={name}
-          placeholder={"Student Name"}
+          onChangeText={setTitle}
+          value={title}
+          placeholder={"Post Title"}
         />
         <TextInput
           style={styles.input}
-          onChangeText={setAddress}
-          value={address}
-          placeholder={"Student Address"}
+          onChangeText={setDetail}
+          value={detail}
+          placeholder={"Post Detail"}
         />
         <View style={styles.buttonesContainer}>
           <TouchableOpacity onPress={onCancellCallback} style={styles.button}>
-            <Text style={styles.buttonText}>CANCELL</Text>
+            <Text style={styles.buttonText}>CANCEL</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onSaveCallback} style={styles.button}>
             <Text style={styles.buttonText}>SAVE</Text>
@@ -188,4 +189,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StudentAdd;
+export default PostAdd;

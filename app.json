@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "student_app",
-    "slug": "student_app",
+    "name": "post_app",
+    "slug": "post_app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

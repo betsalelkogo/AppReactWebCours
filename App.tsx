@@ -16,9 +16,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import StudentList from "./componnents/StudentsList";
-import StudentDetails from "./componnents/StudentDetails";
-import StudentAdd from "./componnents/StudentAdd";
+import PostsList from "./componnents/PostsList";
+import PostDetails from "./componnents/PostDetails";
+import PostAdd from "./componnents/PostAdd";
 
 const InfoScreen: FC<{ route: any; navigation: any }> = ({
   route,
@@ -31,30 +31,30 @@ const InfoScreen: FC<{ route: any; navigation: any }> = ({
   );
 };
 
-const StudentStack = createNativeStackNavigator();
-const StudentStackCp: FC<{ route: any; navigation: any }> = ({
+const PostStack = createNativeStackNavigator();
+const PostStackCp: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
-  const addNewStudents = () => {
-    navigation.navigate("StudentAdd");
+  const addNewPost = () => {
+    navigation.navigate("PostAdd");
   };
   return (
-    <StudentStack.Navigator>
-      <StudentStack.Screen
-        name="StudentList"
-        component={StudentList}
+    <PostStack.Navigator>
+      <PostStack.Screen
+        name="PostsList"
+        component={PostsList}
         options={{
           headerRight: () => (
-            <TouchableOpacity onPress={addNewStudents}>
+            <TouchableOpacity onPress={addNewPost}>
               <Ionicons name={"add-outline"} size={40} color={"gray"} />
             </TouchableOpacity>
           ),
         }}
       />
-      <StudentStack.Screen name="StudentDetails" component={StudentDetails} />
-      <StudentStack.Screen name="StudentAdd" component={StudentAdd} />
-    </StudentStack.Navigator>
+      <PostStack.Screen name="PostDetails" component={PostDetails} />
+      <PostStack.Screen name="PostAdd" component={PostAdd} />
+    </PostStack.Navigator>
   );
 };
 
@@ -70,20 +70,22 @@ const App: FC = () => {
               iconName = focused
                 ? "information-circle"
                 : "information-circle-outline";
-            } else if (route.name === "StudentStackCp") {
+            } else if (route.name === "PostStackCp") {
               iconName = focused ? "list-circle" : "list-circle-outline";
             }
 
             // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
+            return (
+              <Ionicons name={iconName.toString()} size={size} color={color} />
+            );
           },
           tabBarActiveTintColor: "tomato",
           tabBarInactiveTintColor: "gray",
         })}
       >
         <Tab.Screen
-          name="StudentStackCp"
-          component={StudentStackCp}
+          name="PostStackCp"
+          component={PostStackCp}
           options={{ headerShown: false }}
         />
         <Tab.Screen name="InfoScreen" component={InfoScreen} />

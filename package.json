@@ -1,5 +1,5 @@
 {
-  "name": "student_app",
+  "name": "post_app",
   "version": "1.0.0",
   "description": "",
   "main": "node_modules/expo/AppEntry.js",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/betsalelkogo/AppReactWebCours.git"
   },
-  "author": "",
+  "author": "Betsalel Koginsky",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/betsalelkogo/AppReactWebCours/issues"
