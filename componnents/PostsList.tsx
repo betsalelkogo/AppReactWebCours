@@ -16,13 +16,14 @@ import {
 import PostModel, { Post } from "../model/PostModel";
 
 const ListItem: FC<{
-  title: String;
   id: String;
+  detail: String;
+  title: String;
   image: String;
   onRowSelected: (id: String) => void;
-}> = ({ title, id, image, onRowSelected }) => {
+}> = ({ title, id, detail, image, onRowSelected }) => {
   const onClick = () => {
-    console.log("int he row: row was selected " + id);
+    console.log("in the row: row was selected " + id);
     onRowSelected(id);
   };
 
@@ -45,7 +46,7 @@ const ListItem: FC<{
 
         <View style={styles.listRowTextContainer}>
           <Text style={styles.listRowName}>{title}</Text>
-          <Text style={styles.listRowId}>{id}</Text>
+          <Text style={styles.listRowId}>{detail}</Text>
         </View>
       </View>
     </TouchableHighlight>
@@ -87,9 +88,10 @@ const PostList: FC<{ route: any; navigation: any }> = ({
       renderItem={({ item }) => (
         <ListItem
           title={item.title}
-          id={item.id}
+          detail={item.detail}
           image={item.image}
           onRowSelected={onRowSelected}
+          id={item.id}
         />
       )}
     ></FlatList>

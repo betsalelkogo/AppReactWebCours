@@ -52,7 +52,7 @@ const PostStackCp: FC<{ route: any; navigation: any }> = ({
           ),
         }}
       />
-      <PostStack.Screen name="PostDetails" component={PostDetails} />
+      <PostStack.Screen name="PostsDetails" component={PostDetails} />
       <PostStack.Screen name="PostAdd" component={PostAdd} />
     </PostStack.Navigator>
   );
