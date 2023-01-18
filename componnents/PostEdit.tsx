@@ -15,7 +15,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import PostModel, { Post } from "../model/PostModel";
 import * as ImagePicker from "expo-image-picker";
 
-const PostAdd: FC<{ route: any; navigation: any }> = ({
+const PostEdit: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
@@ -24,8 +24,23 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
+  const [post, setPost] = useState<Post>();
+  const postId = JSON.stringify(route.params.postId);
   const userName = JSON.stringify(route.params.userName);
-
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", async () => {
+      console.log("focus");
+      try {
+        const post1 = await PostModel.getPostById(postId);
+        setPost(post1);
+        console.log("fetching post complete");
+      } catch (err) {
+        console.log("fail fetching post " + err);
+      }
+      console.log("fetching finish");
+    });
+    return unsubscribe;
+  });
   const askPermission = async () => {
     try {
       const res = await ImagePicker.getCameraPermissionsAsync();
@@ -68,8 +83,8 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
     console.log("save button was pressed");
     const post: Post = {
       id: id,
-      userName: userName,
       title: title,
+      userName: userName,
       detail: detail,
       image: "url",
     };
@@ -95,14 +110,17 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
     <ScrollView>
       <View style={styles.container}>
         <View>
-          {avatarUri == "" && (
+          {post?.image == "" && (
             <Image
               source={require("../assets/ava.png")}
               style={styles.avatar}
             ></Image>
           )}
-          {avatarUri != "" && (
-            <Image source={{ uri: avatarUri }} style={styles.avatar}></Image>
+          {post?.image != "" && (
+            <Image
+              source={{ uri: post?.image.toString() }}
+              style={styles.avatar}
+            ></Image>
           )}
 
           <TouchableOpacity onPress={openCamera}>
@@ -116,19 +134,19 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
         <TextInput
           style={styles.input}
           onChangeText={setId}
-          value={id}
+          value={post?.id + ""}
           placeholder={"Post ID"}
         />
         <TextInput
           style={styles.input}
           onChangeText={setTitle}
-          value={title}
+          value={post?.title + ""}
           placeholder={"Post Title"}
         />
         <TextInput
           style={styles.input}
           onChangeText={setDetail}
-          value={detail}
+          value={post?.detail + ""}
           placeholder={"Post Detail"}
         />
         <View style={styles.buttonesContainer}>
@@ -191,4 +209,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostAdd;
+export default PostEdit;

@@ -59,7 +59,10 @@ const PostList: FC<{ route: any; navigation: any }> = ({
 }) => {
   const onRowSelected = (id: String) => {
     console.log("in the list: row was selected " + id);
-    navigation.navigate("PostsDetails", { postId: id });
+    navigation.navigate("PostsDetails", {
+      postId: id,
+      userName: "needToFixToUserName",
+    });
   };
 
   const [posts, setPosts] = useState<Array<Post>>();

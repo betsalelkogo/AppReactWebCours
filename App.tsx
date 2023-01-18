@@ -73,11 +73,7 @@ const App: FC = () => {
             } else if (route.name === "PostStackCp") {
               iconName = focused ? "list-circle" : "list-circle-outline";
             }
-
-            // You can return any component that you like here!
-            return (
-              <Ionicons name={iconName.toString()} size={size} color={color} />
-            );
+            return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarActiveTintColor: "tomato",
           tabBarInactiveTintColor: "gray",
@@ -93,12 +89,6 @@ const App: FC = () => {
     </NavigationContainer>
   );
 };
-
-// const App: FC = () => {
-//   return (
-//     <StudentDetails></StudentDetails>
-//   )
-// };
 
 const styles = StyleSheet.create({
   container: {
