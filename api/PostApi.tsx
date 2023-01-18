@@ -3,6 +3,9 @@ import apiClient from "./ClientApi";
 const getAllPosts = async () => {
   return apiClient.get("/post");
 };
+const getPostById = async (podtId: String) => {
+  return apiClient.get("/:id", podtId);
+};
 
 const addPost = async (postJson: any) => {
   return apiClient.post("/post", postJson);
@@ -16,4 +19,5 @@ export default {
   getAllPosts,
   addPost,
   uploadImage,
+  getPostById,
 };

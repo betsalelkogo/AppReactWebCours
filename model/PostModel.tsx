@@ -28,6 +28,22 @@ const getAllPosts = async () => {
   return data;
 };
 
+const getPostById = async (podtId: String) => {
+  console.log("getPostById()");
+  const res: any = await PostApi.getPostById(podtId);
+
+  if (res.data) {
+    const p: Post = {
+      title: res.data.title,
+      detail: res.data.deltail,
+      id: res.data._id,
+      image: res.data.avatarUrl,
+    };
+    return p;
+  }
+  return undefined;
+};
+
 const addPost = async (post: Post) => {
   console.log("addPost");
   const data = {
@@ -62,4 +78,4 @@ const uploadImage = async (imageURI: String) => {
   }
   return "";
 };
-export default { getAllPosts, addPost, uploadImage };
+export default { getAllPosts, addPost, uploadImage, getPostById };
