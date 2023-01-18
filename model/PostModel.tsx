@@ -31,17 +31,18 @@ const getAllPosts = async () => {
 };
 
 const getPostById = async (podtId: String) => {
-  console.log("getPostById()");
+  console.log("getPostById()" + podtId);
   const res: any = await PostApi.getPostById(podtId);
-
   if (res.data) {
+    console.log(res.data);
     const p: Post = {
-      title: res.data.title,
-      detail: res.data.deltail,
-      id: res.data._id,
-      userName: res.data.userName,
-      image: res.data.avatarUrl,
+      title: res.data[0].title,
+      detail: res.data[0].detail,
+      id: res.data[0]._id,
+      userName: res.data[0].userName,
+      image: res.data[0].avatarUrl,
     };
+    console.log(p);
     return p;
   }
   return undefined;

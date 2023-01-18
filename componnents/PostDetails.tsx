@@ -29,7 +29,7 @@ const PostDetails: FC<{ route: any; navigation: any }> = ({
       console.log("fetching finish");
     });
     return unsubscribe;
-  });
+  }, [post]);
   const onCancellCallback = () => {
     navigation.goBack();
   };
@@ -45,7 +45,7 @@ const PostDetails: FC<{ route: any; navigation: any }> = ({
           )}
           {post?.image != "" && (
             <Image
-              source={{ uri: post?.image.toString() }}
+              source={{ uri: post?.image + "" }}
               style={styles.avatar}
             ></Image>
           )}
