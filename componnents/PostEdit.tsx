@@ -20,18 +20,17 @@ const PostEdit: FC<{ route: any; navigation: any }> = ({
   navigation,
 }) => {
   console.log("My app is running");
-  const [id, setId] = useState("");
+  const [id, setId] = useState(route.params.postId);
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
   const [post, setPost] = useState<Post>();
-  const postId = JSON.stringify(route.params.postId);
-  const userName = JSON.stringify(route.params.userName);
+  const userName = route.params.userName;
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
       console.log("focus");
       try {
-        const post1 = await PostModel.getPostById(postId);
+        const post1 = await PostModel.getPostById(id);
         setPost(post1);
         console.log("fetching post complete");
       } catch (err) {
@@ -110,13 +109,13 @@ const PostEdit: FC<{ route: any; navigation: any }> = ({
     <ScrollView>
       <View style={styles.container}>
         <View>
-          {post?.image == "" && (
+          {post?.image.toString() === "" && (
             <Image
               source={require("../assets/ava.png")}
               style={styles.avatar}
             ></Image>
           )}
-          {post?.image != "" && (
+          {post?.image.toString() != "" && (
             <Image
               source={{ uri: post?.image.toString() }}
               style={styles.avatar}
@@ -133,19 +132,17 @@ const PostEdit: FC<{ route: any; navigation: any }> = ({
 
         <TextInput
           style={styles.input}
-          onChangeText={setId}
-          value={post?.id + ""}
+          value={id}
           placeholder={"Post ID"}
+          onChangeText={setId}
         />
         <TextInput
           style={styles.input}
-          onChangeText={setTitle}
           value={post?.title + ""}
           placeholder={"Post Title"}
         />
         <TextInput
           style={styles.input}
-          onChangeText={setDetail}
           value={post?.detail + ""}
           placeholder={"Post Detail"}
         />

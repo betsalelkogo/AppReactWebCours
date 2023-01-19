@@ -53,19 +53,19 @@ const ListItem: FC<{
   );
 };
 
-const PostList: FC<{ route: any; navigation: any }> = ({
+const MyPostList: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
   const onRowSelected = (id: String) => {
     console.log("in the list: row was selected " + id);
-    navigation.navigate("PostsDetails", {
+    navigation.navigate("PostEdit", {
       postId: id,
+      userName: "needToFixToUserName",
     });
   };
 
   const [posts, setPosts] = useState<Array<Post>>();
-  const userName = JSON.stringify(route.params?.userName);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
@@ -73,9 +73,6 @@ const PostList: FC<{ route: any; navigation: any }> = ({
       let posts: Post[] = [];
       try {
         posts = await PostModel.getAllPosts();
-        posts.filter((post) => {
-          post.userName === userName;
-        });
         console.log("fetching posts complete");
       } catch (err) {
         console.log("fail fetching posts " + err);
@@ -139,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostList;
+export default MyPostList;

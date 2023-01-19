@@ -19,14 +19,16 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import PostsList from "./componnents/PostsList";
 import PostDetails from "./componnents/PostDetails";
 import PostAdd from "./componnents/PostAdd";
+import MyPostList from "./componnents/MyPostsList";
+import PostEdit from "./componnents/PostEdit";
 
-const InfoScreen: FC<{ route: any; navigation: any }> = ({
+const MyPostScreen: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Info Screen</Text>
+      <Text>My Posts</Text>
     </View>
   );
 };
@@ -53,6 +55,7 @@ const PostStackCp: FC<{ route: any; navigation: any }> = ({
         }}
       />
       <PostStack.Screen name="PostsDetails" component={PostDetails} />
+      <PostStack.Screen name="PostEdit" component={PostEdit} />
       <PostStack.Screen name="PostAdd" component={PostAdd} />
     </PostStack.Navigator>
   );
@@ -66,7 +69,7 @@ const App: FC = () => {
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName = "";
-            if (route.name === "InfoScreen") {
+            if (route.name === "MyPosts") {
               iconName = focused
                 ? "information-circle"
                 : "information-circle-outline";
@@ -84,7 +87,7 @@ const App: FC = () => {
           component={PostStackCp}
           options={{ headerShown: false }}
         />
-        <Tab.Screen name="InfoScreen" component={InfoScreen} />
+        <Tab.Screen name="MyPosts" component={MyPostList} />
       </Tab.Navigator>
     </NavigationContainer>
   );

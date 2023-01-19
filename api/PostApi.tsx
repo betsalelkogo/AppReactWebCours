@@ -3,8 +3,8 @@ import apiClient from "./ClientApi";
 const getAllPosts = async () => {
   return apiClient.get("/post");
 };
-const getPostById = async (podtId: String) => {
-  return apiClient.get("/:id", podtId);
+const getPostById = async (postId: String) => {
+  return apiClient.get("/post/" + postId, postId);
 };
 
 const addPost = async (postJson: any) => {
