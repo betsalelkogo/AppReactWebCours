@@ -24,7 +24,7 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
-  const userName = JSON.stringify(route.params.userName);
+  const userEmail = JSON.stringify(route.params.userEmail);
 
   const askPermission = async () => {
     try {
@@ -68,7 +68,7 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
     console.log("save button was pressed");
     const post: Post = {
       id: id,
-      userName: userName,
+      userEmail: userEmail,
       title: title,
       detail: detail,
       image: "url",

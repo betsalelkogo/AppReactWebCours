@@ -6,7 +6,7 @@ export type Post = {
   id: String;
   title: String;
   detail: String;
-  userName: String;
+  userEmail: String;
   image: String;
 };
 
@@ -21,7 +21,7 @@ const getAllPosts = async () => {
         title: obj.title,
         detail: obj.deltail,
         id: obj._id,
-        userName: obj.userName,
+        userEmail: obj.userEmail,
         image: obj.avatarUrl,
       };
       data.push(pt);
@@ -38,7 +38,7 @@ const getPostById = async (podtId: String) => {
       title: res.data.title,
       detail: res.data.detail,
       id: res.data._id,
-      userName: res.data.userName,
+      userEmail: res.data.userEmail,
       image: res.data.avatarUrl,
     };
     return p;
@@ -52,7 +52,7 @@ const addPost = async (post: Post) => {
     title: post.title,
     detail: post.detail,
     _id: post.id,
-    userName: post.userName,
+    userEmail: post.userEmail,
     avatarUrl: post.image,
   };
   try {

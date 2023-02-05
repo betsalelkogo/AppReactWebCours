@@ -21,6 +21,7 @@ import PostDetails from "./componnents/PostDetails";
 import PostAdd from "./componnents/PostAdd";
 import MyPostList from "./componnents/MyPostsList";
 import PostEdit from "./componnents/PostEdit";
+import Login from "./componnents/Login";
 
 const MyPostScreen: FC<{ route: any; navigation: any }> = ({
   route,
@@ -43,6 +44,7 @@ const PostStackCp: FC<{ route: any; navigation: any }> = ({
   };
   return (
     <PostStack.Navigator>
+      <PostStack.Screen name="Login" component={Login} />
       <PostStack.Screen
         name="PostsList"
         component={PostsList}

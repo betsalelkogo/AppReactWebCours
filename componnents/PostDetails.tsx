@@ -7,6 +7,7 @@ import {
   Button,
   Text,
   ScrollView,
+  TextComponent,
 } from "react-native";
 import PostModel, { Post } from "../model/PostModel";
 
@@ -51,8 +52,8 @@ const PostDetails: FC<{ route: any; navigation: any }> = ({
           )}
         </View>
 
-        <Text>{post?.title}</Text>
-        <Text>{post?.detail}</Text>
+        <TextComponent>{post?.title}</TextComponent>
+        <TextComponent>{post?.detail}</TextComponent>
 
         <View style={styles.buttonesContainer}>
           <TouchableOpacity onPress={onCancellCallback} style={styles.button}>

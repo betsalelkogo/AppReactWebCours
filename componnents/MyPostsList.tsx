@@ -26,7 +26,6 @@ const ListItem: FC<{
     console.log("in the row: row was selected " + id);
     onRowSelected(id);
   };
-
   console.log("image: " + image);
   return (
     <TouchableHighlight onPress={onClick} underlayColor={"gainsboro"}>
@@ -57,11 +56,12 @@ const MyPostList: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
+  const userEmail = JSON.stringify(route.params.userEmail);
   const onRowSelected = (id: String) => {
     console.log("in the list: row was selected " + id);
     navigation.navigate("PostEdit", {
       postId: id,
-      userName: "needToFixToUserName",
+      userEmail: userEmail,
     });
   };
 
