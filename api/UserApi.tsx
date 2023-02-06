@@ -1,10 +1,10 @@
 import apiClient from "./ClientApi";
 
-const login = async () => {
-  return apiClient.get("/login");
+const login = async (email: string, password: string) => {
+  return apiClient.get("/login", { email, password });
 };
-const register = async () => {
-  return apiClient.get("/register");
+const register = async (name: string, email: string, password: string) => {
+  return apiClient.post("/register", { name, email, password });
 };
 
 const logout = async () => {

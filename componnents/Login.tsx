@@ -8,6 +8,7 @@ import {
   Text,
 } from "react-native";
 import { useState, FC, useEffect } from "react";
+import UserApi from "../api/UserApi";
 
 const Login: FC<{ route: any; navigation: any }> = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,8 @@ const Login: FC<{ route: any; navigation: any }> = ({ navigation }) => {
   const onExitlCallback = () => {
     navigation.goBack();
   };
-  const onLogInCallback = () => {
+  const onLogInCallback = async () => {
+    const response = await UserApi.login(email, password);
     navigation.navigate("PostsList", {
       userEmail: email,
     });

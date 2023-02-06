@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import PostModel, { Post } from "../model/PostModel";
 
-const PostDetails: FC<{ route: any; navigation: any }> = ({
+const UserHomePage: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
@@ -111,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostDetails;
+export default UserHomePage;
