@@ -22,7 +22,9 @@ import PostAdd from "./componnents/PostAdd";
 import MyPostList from "./componnents/MyPostsList";
 import PostEdit from "./componnents/PostEdit";
 import Login from "./componnents/Login";
-
+import UserHomePage from "./componnents/UserPage";
+import Register from "./componnents/Register";
+import ChatRoom from "./componnents/ChatRoom";
 const MyPostScreen: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
@@ -44,6 +46,7 @@ const PostStackCp: FC<{ route: any; navigation: any }> = ({
   };
   return (
     <PostStack.Navigator>
+      <PostStack.Screen name="Register" component={Register} />
       <PostStack.Screen name="Login" component={Login} />
       <PostStack.Screen
         name="PostsList"
@@ -59,6 +62,8 @@ const PostStackCp: FC<{ route: any; navigation: any }> = ({
       <PostStack.Screen name="PostsDetails" component={PostDetails} />
       <PostStack.Screen name="PostEdit" component={PostEdit} />
       <PostStack.Screen name="PostAdd" component={PostAdd} />
+      <PostStack.Screen name="UserHomePage" component={UserHomePage} />
+      <PostStack.Screen name="ChatRoom" component={ChatRoom} />
     </PostStack.Navigator>
   );
 };

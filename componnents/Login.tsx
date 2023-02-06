@@ -13,12 +13,12 @@ import UserApi from "../api/UserApi";
 const Login: FC<{ route: any; navigation: any }> = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const onExitlCallback = () => {
-    navigation.goBack();
-  };
   const onLogInCallback = async () => {
-    const response = await UserApi.login(email, password);
+    try {
+      await UserApi.login(email, password);
+    } catch (err) {
+      console.log("fail to login: " + err);
+    }
     navigation.navigate("PostsList", {
       userEmail: email,
     });
@@ -42,9 +42,6 @@ const Login: FC<{ route: any; navigation: any }> = ({ navigation }) => {
           placeholder={"Password"}
         />
         <View style={styles.buttonesContainer}>
-          <TouchableOpacity onPress={onExitlCallback} style={styles.button}>
-            <Text style={styles.buttonText}>EXIT</Text>
-          </TouchableOpacity>
           <TouchableOpacity onPress={onLogInCallback} style={styles.button}>
             <Text style={styles.buttonText}>LOGIN</Text>
           </TouchableOpacity>

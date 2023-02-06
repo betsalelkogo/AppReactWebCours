@@ -18,21 +18,24 @@ const Register: FC<{ route: any; navigation: any }> = ({ navigation }) => {
   const onExitlCallback = () => {
     navigation.goBack();
   };
-  const onLogInCallback = () => {
+  const onLogInCallback = async () => {
     if (cPassword === password) {
-      UserApi.register();
+      try {
+        await UserApi.login(email, password);
+      } catch (err) {
+        console.log("fail to register: " + err);
+      }
       navigation.navigate("PostsList", {
         userEmail: email,
       });
-    } else {
-      alert("Please check your password");
     }
+    alert("Check your password and try again");
   };
   return (
     <ScrollView>
       <View style={styles.container}>
         <View>
-          <Text>Hello Please Log In...</Text>
+          <Text>Hello Please Register...</Text>
         </View>
         <TextInput
           style={styles.input}
@@ -59,9 +62,6 @@ const Register: FC<{ route: any; navigation: any }> = ({ navigation }) => {
           placeholder={"Confirmed Password"}
         />
         <View style={styles.buttonesContainer}>
-          <TouchableOpacity onPress={onExitlCallback} style={styles.button}>
-            <Text style={styles.buttonText}>EXIT</Text>
-          </TouchableOpacity>
           <TouchableOpacity onPress={onLogInCallback} style={styles.button}>
             <Text style={styles.buttonText}>LOGIN</Text>
           </TouchableOpacity>
