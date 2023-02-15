@@ -1,114 +1,150 @@
-import { FC, useState, useEffect } from "react";
+import { FC } from "react";
 import {
-  StyleSheet,
   View,
-  Image,
-  TouchableOpacity,
-  Button,
   Text,
-  ScrollView,
+  StyleSheet,
+  StatusBar,
+  Image,
+  FlatList,
 } from "react-native";
-import PostModel, { Post } from "../model/PostModel";
+import MyColors from "../MyColors";
+import { ListItem } from "./MyPostsList";
 
-const UserHomePage: FC<{ route: any; navigation: any }> = ({
-  route,
-  navigation,
-}) => {
-  const [post, setPost] = useState<Post>();
-  const postId = JSON.stringify(route.params.postId);
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", async () => {
-      console.log("focus");
-      try {
-        const post1 = await PostModel.getPostById(postId);
-        setPost(post1);
-        console.log("fetching post complete");
-      } catch (err) {
-        console.log("fail fetching post " + err);
-      }
-      console.log("fetching finish");
-    });
-    return unsubscribe;
-  }, [post]);
-  const onCancellCallback = () => {
-    navigation.goBack();
-  };
+type Post = {
+  name: String;
+  id: String;
+  image: any;
+  avatar: any;
+  text: String;
+};
+
+const posts: Array<Post> = [
+  {
+    name: "Misha",
+    id: "1",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+  },
+  {
+    name: "Vasya",
+    id: "2",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "String",
+  },
+  {
+    name: "Misha",
+    id: "3",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+  },
+  {
+    name: "Vasya",
+    id: "4",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "String",
+  },
+  {
+    name: "Misha",
+    id: "5",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+  },
+  {
+    name: "Vasya",
+    id: "6",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "String",
+  },
+  {
+    name: "Misha",
+    id: "7",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+  },
+  {
+    name: "Vasya",
+    id: "8",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "String",
+  },
+  {
+    name: "Misha",
+    id: "9",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+  },
+  {
+    name: "Vasya",
+    id: "10",
+    image: require("../assets/postImage.jpg"),
+    avatar: require("../assets/avatar.png"),
+    text: "String",
+  },
+];
+
+const footerComponent = () => {
+  return <View style={{ height: 80 }} />;
+};
+
+const UserPage: FC = () => {
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View
+        style={{
+          borderBottomColor: "black",
+          borderBottomWidth: 2,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Image
+          source={require("../assets/avatar.png")}
+          style={{ height: 80, width: 80, borderRadius: 40, margin: 20 }}
+        />
         <View>
-          {post?.image == "" && (
-            <Image
-              source={require("../assets/ava.png")}
-              style={styles.avatar}
-            ></Image>
-          )}
-          {post?.image != "" && (
-            <Image
-              source={{ uri: post?.image + "" }}
-              style={styles.avatar}
-            ></Image>
-          )}
-        </View>
-
-        <Text>{post?.title}</Text>
-        <Text>{post?.detail}</Text>
-
-        <View style={styles.buttonesContainer}>
-          <TouchableOpacity onPress={onCancellCallback} style={styles.button}>
-            <Text style={styles.buttonText}>RETURN</Text>
-          </TouchableOpacity>
+          <Text style={styles.bioText}>Vasya Pupkin</Text>
+          <Text style={styles.bioText}>vasya_pupkin@gmail.com</Text>
+          <Text style={[{ marginBottom: 10 }, { ...styles.bioText }]}>
+            054-8302399
+          </Text>
         </View>
       </View>
-    </ScrollView>
+      <FlatList
+        data={posts}
+        keyExtractor={(post) => post.id.toString()}
+        ListFooterComponent={footerComponent}
+        renderItem={({ item }) => (
+          <ListItem
+            name={item.name.toString()}
+            id={item.id}
+            image={item.image}
+            avatar={item.avatar}
+            text={item.text}
+          />
+        )}
+      ></FlatList>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: MyColors.background,
   },
-  avatar: {
-    height: 250,
-    resizeMode: "contain",
-    alignSelf: "center",
-    width: "100%",
-  },
-  cameraButton: {
-    position: "absolute",
-    bottom: -10,
-    left: 10,
-    width: 50,
-    height: 50,
-  },
-  galleryButton: {
-    position: "absolute",
-    bottom: -10,
-    right: 10,
-    width: 50,
-    height: 50,
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonesContainer: {
-    flexDirection: "row",
-  },
-  button: {
-    flex: 1,
-    margin: 12,
-    padding: 12,
-    backgroundColor: "blue",
-    borderRadius: 10,
-  },
-  buttonText: {
-    textAlign: "center",
-    color: "white",
+  bioText: {
+    marginLeft: 10,
+    color: MyColors.text,
   },
 });
 
-export default UserHomePage;
+export default UserPage;

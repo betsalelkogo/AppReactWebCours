@@ -15,7 +15,7 @@ import {
 
 import PostModel, { Post } from "../model/PostModel";
 
-const ListItem: FC<{
+export const ListItem: FC<{
   id: String;
   detail: String;
   title: String;
