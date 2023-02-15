@@ -1,4 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { FC } from "react";
 import {
   View,
@@ -8,6 +10,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import MyColors from "../MyColors";
+import ChatRoom from "./ChatRoom";
+import UserPage from "./UserPage";
 
 const Settings: FC = () => {
   return (
@@ -19,12 +23,44 @@ const Settings: FC = () => {
           marginTop: 20,
           marginLeft: 10,
           borderBottomWidth: 2,
-          borderBottomColor: "white",
+          borderBottomColor: "black",
           marginRight: 10,
         }}
       >
-        <Ionicons name={"log-out"} color={"white"} size={40} />
-        <Text style={{ color: "white", fontSize: 20 }}>Logout</Text>
+        <FontAwesome5 name={"rocketchat"} color={"black"} size={24} />
+        <Text style={{ color: "black", fontSize: 20 }} onPress={ChatRoom}>
+          Chat Room
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginTop: 20,
+          marginLeft: 10,
+          borderBottomWidth: 2,
+          borderBottomColor: "black",
+          marginRight: 10,
+        }}
+      >
+        <Entypo name={"user"} color={"black"} size={24} />
+        <Text style={{ color: "black", fontSize: 20 }} onPress={UserPage}>
+          User Page
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginTop: 20,
+          marginLeft: 10,
+          borderBottomWidth: 2,
+          borderBottomColor: "black",
+          marginRight: 10,
+        }}
+      >
+        <AntDesign name={"logout"} color={"black"} size={24} />
+        <Text style={{ color: "black", fontSize: 20 }}>Logout</Text>
       </TouchableOpacity>
     </View>
   );
