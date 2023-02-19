@@ -111,7 +111,7 @@ const PostEdit: FC<{ route: any; navigation: any }> = ({
         <View>
           {post?.image.toString() === "" && (
             <Image
-              source={require("../assets/ava.png")}
+              source={require("../assets/avatar.png")}
               style={styles.avatar}
             ></Image>
           )}

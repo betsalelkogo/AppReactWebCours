@@ -40,7 +40,7 @@ const PostDetails: FC<{ route: any; navigation: any }> = ({
         <View>
           {post?.image == "" && (
             <Image
-              source={require("../assets/ava.png")}
+              source={require("../assets/avatar.png")}
               style={styles.avatar}
             ></Image>
           )}

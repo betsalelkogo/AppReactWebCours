@@ -105,11 +105,11 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: "white",
+    borderColor: "black",
   },
   messageText: {
     flex: 1,
-    color: "white",
+    color: "black",
     margin: 5,
   },
 });

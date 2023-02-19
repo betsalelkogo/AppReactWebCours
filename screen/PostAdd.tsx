@@ -24,7 +24,7 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
-  const userEmail = JSON.stringify(route.params.userEmail);
+  const userEmail = JSON.stringify(route.params?.userEmail);
 
   const askPermission = async () => {
     try {

@@ -1,13 +1,15 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar, View, Image } from "react-native";
-import Home from "../screen/Home";
+import Home from "../screen/PostsList";
 import Settings from "./Settings";
 import AddPost from "../screen/PostAdd";
+import PostsDetails from "../screen/PostDetails";
 import MyColors from "../MyColors";
 import ChatRoom from "../screen/ChatRoom";
 import Profile from "../screen/UserPage";
 import React, { Dispatch, FC, SetStateAction } from "react";
+import PostEdit from "../screen/PostEdit";
 
 const customHeader = () => {
   return (
@@ -72,8 +74,10 @@ const TabsStack = () => {
       })}
     >
       <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="PostsDetails" component={PostsDetails} />
       <Tab.Screen name="Chat" component={ChatRoom} />
       <Tab.Screen name="Post" component={AddPost} />
+      <Tab.Screen name="EditPost" component={PostEdit} />
       <Tab.Screen name="Profile" component={Profile} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>

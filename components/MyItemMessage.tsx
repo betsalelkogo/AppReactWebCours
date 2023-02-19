@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   messageBox: {
     width: "70%",
     borderRadius: 15,
-    backgroundColor: "rgba(172, 91, 253, 1)",
+    backgroundColor: "rgba(1, 240, 100, 0.5)",
   },
   text: {
     margin: 10,
