@@ -1,51 +1,41 @@
-import apiClient from "../api/ClientApi";
-import UserApi from "../api/UserApi";
-import FormData from "form-data";
+import UserAPI from "../api/UserApi";
 
 export type User = {
-  id: String;
   name: String;
   email: String;
+  username: String;
   password: String;
-  imag: String;
+  //avatar: String
 };
 
-const Login = async () => {
-  console.log("Login()");
-  const res: any = await UserApi.login();
-  let us;
-  if (res.data) {
-    res.data;
-    // console.log("element: " + obj._id)
-    const user: User = {
-      name: res.data.name,
-      email: res.data.email,
-      id: res.data._id,
-      password: res.data.password,
-      imag: res.data.avatarUrl,
-    };
-    us = user;
-  }
-  return us;
-};
-
-const uploadImage = async (imageURI: String) => {
-  var body = new FormData();
-  body.append("file", { name: "name", type: "image/jpeg", uri: imageURI });
+const register = async (user: User) => {
+  const data = {
+    name: user.name,
+    email: user.email,
+    username: user.username,
+    password: user.password,
+  };
   try {
-    const res = await UserApi.uploadImage(body);
-    if (!res.ok) {
-      console.log("save failed " + res.problem);
-    } else {
-      if (res.data) {
-        const d: any = res.data;
-        console.log("----= url:" + d.url);
-        return d.url;
-      }
-    }
+    const res: any = await UserAPI.register(data);
+    console.log(res);
+    return res;
   } catch (err) {
-    console.log("save failed " + err);
+    console.log("Register user failed" + err);
   }
-  return "";
 };
-export default { Login, uploadImage };
+
+const login = async (username: String, password: String) => {
+  const data = {
+    username: username,
+    password: password,
+  };
+  try {
+    const res: any = await UserAPI.login(data);
+    console.log(res);
+    return res;
+  } catch (err) {
+    console.log("Register user failed" + err);
+  }
+};
+
+export default { register, login };

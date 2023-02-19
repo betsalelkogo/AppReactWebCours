@@ -1,6 +1,4 @@
-import apiClient from "../api/ClientApi";
 import PostApi from "../api/PostApi";
-import FormData from "form-data";
 
 export type Post = {
   id: String;

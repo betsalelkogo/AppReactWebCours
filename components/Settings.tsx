@@ -1,6 +1,4 @@
-import { AntDesign } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { FC } from "react";
 import {
   View,
@@ -9,58 +7,34 @@ import {
   StatusBar,
   TouchableOpacity,
 } from "react-native";
+import { useAuth } from "../helper/AuthContext";
 import MyColors from "../MyColors";
-import ChatRoom from "./ChatRoom";
-import UserPage from "./UserPage";
 
-const Settings: FC = () => {
+const Settings: FC<{ route: any; navigation: any }> = ({
+  route,
+  navigation,
+}) => {
+  const auth = useAuth();
+  const logoutPressed = async () => {
+    await auth.signOut();
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
+        onPress={logoutPressed}
         style={{
           flexDirection: "row",
           alignItems: "center",
           marginTop: 20,
           marginLeft: 10,
           borderBottomWidth: 2,
-          borderBottomColor: "black",
+          borderBottomColor: "white",
           marginRight: 10,
         }}
       >
-        <FontAwesome5 name={"rocketchat"} color={"black"} size={24} />
-        <Text style={{ color: "black", fontSize: 20 }} onPress={ChatRoom}>
-          Chat Room
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: 20,
-          marginLeft: 10,
-          borderBottomWidth: 2,
-          borderBottomColor: "black",
-          marginRight: 10,
-        }}
-      >
-        <Entypo name={"user"} color={"black"} size={24} />
-        <Text style={{ color: "black", fontSize: 20 }} onPress={UserPage}>
-          User Page
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: 20,
-          marginLeft: 10,
-          borderBottomWidth: 2,
-          borderBottomColor: "black",
-          marginRight: 10,
-        }}
-      >
-        <AntDesign name={"logout"} color={"black"} size={24} />
-        <Text style={{ color: "black", fontSize: 20 }}>Logout</Text>
+        <Ionicons name={"log-out"} color={"white"} size={40} />
+        <Text style={{ color: "white", fontSize: 20 }}>Logout</Text>
       </TouchableOpacity>
     </View>
   );

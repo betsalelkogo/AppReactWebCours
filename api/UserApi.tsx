@@ -1,23 +1,19 @@
 import apiClient from "./ClientApi";
 
-const login = async (email: string, password: string) => {
-  return apiClient.get("/auth/login", { email, password });
-};
-const register = async (name: string, email: string, password: string) => {
-  return apiClient.post("/auth/register", { name, email, password });
+const register = async (userJson: any) => {
+  return apiClient.post("/auth/register", userJson);
 };
 
-const logout = async () => {
-  return apiClient.post("/auth/logout");
+const login = async (authJson: any) => {
+  return apiClient.post("/auth/login", authJson);
 };
 
-const uploadImage = async (image: any) => {
-  return apiClient.post("/file/file", image);
+const logout = async (refreshToken: any) => {
+  return apiClient.get(
+    "/auth/logout",
+    {},
+    { headers: { Authorization: "JWT " + refreshToken } }
+  );
 };
 
-export default {
-  logout,
-  register,
-  uploadImage,
-  login,
-};
+export default { register, login, logout };

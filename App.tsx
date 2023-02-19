@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useState } from "react";
 import { FC } from "react";
 
-import Auth from "./components/Auth";
+import Auth from "./screen/Auth";
 import Tabs from "./components/Tabs";
 
 const App: FC<{ route: any; navigation: any }> = ({ route, navigation }) => {
