@@ -1,326 +1,124 @@
-import { FC, useEffect, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import {
-  View,
-  Image,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Modal,
-  StatusBar,
-  Alert,
-  ToastAndroid,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import MyColors from "../MyColors";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import * as ImagePicker from "expo-image-picker";
-import register from "../api/UserApi";
-import UserModel, { User } from "../helper/UserModel";
+  InputComponent,
+  ButtonComponent,
+  SocialButtons,
+  ScreenLoaderComponent,
+} from "../components";
+import { useNavigation } from "@react-navigation/native";
+import { NavigationScreens, TabNavigationScreens } from "../enum/index";
+import UserApi from "../api/UserApi";
 
-const Register: FC<{ route: any; navigation: any }> = ({
-  route,
-  navigation,
-}) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+export const SignUpScreen: FC<{}> = () => {
+  const [loader, activateLoader] = useState(false);
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [hiddenPass, setHiddenPass] = useState(true);
-  const [eyeIcon, setEyeIcon]: any = useState("eye-outline");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [avatarUri, setAvatarUri] = useState("");
-  const [error, setError] = useState("");
+  const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [screenError, setScreenError] = useState("");
 
-  const askPermission = async () => {
-    try {
-      const res = await ImagePicker.getCameraPermissionsAsync();
-      if (!res.granted) {
-        Alert.alert("Camera permission", "Camera permission is required");
+  const navigation = useNavigation();
+
+  const onRegisterInPressed = async () => {
+    console.log("Register");
+    if (userName && password && password === passwordRepeat) {
+      activateLoader(true);
+      try {
+        const response = await UserApi.RegisterUser(userName, password);
+        if (response.ok) {
+          console.log(response.data);
+          navigation.navigate(NavigationScreens.TabNavigator as never);
+        }
+      } catch (error: any) {
+        setScreenError(error.message);
+        console.log(error.message);
+      } finally {
+        activateLoader(false);
       }
-    } catch (err) {
-      console.log("Ask permission failed");
-    }
-  };
-
-  useEffect(() => {
-    askPermission();
-  }, []);
-
-  const openCamera = async () => {
-    setModalVisible(false);
-    try {
-      const res = await ImagePicker.launchCameraAsync();
-      if (!res.canceled && res.assets.length > 0) {
-        const uri = res.assets[0].uri;
-        setAvatarUri(uri);
-      }
-    } catch (err) {
-      console.log("Open camera failed");
-    }
-  };
-
-  const openGallery = async () => {
-    setModalVisible(false);
-    try {
-      const res = await ImagePicker.launchImageLibraryAsync();
-      if (!res.canceled && res.assets.length > 0) {
-        const uri = res.assets[0].uri;
-        setAvatarUri(uri);
-      }
-    } catch (err) {
-      console.log("Open gallery failed");
-    }
-  };
-
-  const register = async () => {
-    let res: any;
-    const user: User = {
-      name: name,
-      email: email,
-      username: username,
-      password: password,
-    };
-    try {
-      res = await UserModel.register(user);
-    } catch (err) {
-      console.log("Failed register user");
-    }
-    if (res.status == 200) {
-      ToastAndroid.show("Registered succesfull!", ToastAndroid.LONG);
-      navigation.goBack();
     } else {
-      setError(res.data.error);
+      setScreenError("Wrong credentials");
     }
   };
 
-  const hidePass = () => {
-    setHiddenPass(!hiddenPass);
-    if (hiddenPass == true) {
-      setEyeIcon("eye-off-outline");
-    } else {
-      setEyeIcon("eye-outline");
-    }
+  const onSignIn = () => {
+    console.log("sign In");
+    navigation.navigate(NavigationScreens.SignIn as never);
   };
+
   return (
-    <View style={styles.container}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.modalView}>
-          <TouchableOpacity
-            style={{ alignItems: "center" }}
-            onPress={openGallery}
-          >
-            <Ionicons name="images" size={80} color={MyColors.background} />
-            <Text style={{ color: MyColors.background }}>Gallery</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ alignItems: "center" }}
-            onPress={openCamera}
-          >
-            <Ionicons name="camera" size={80} color={MyColors.background} />
-            <Text style={{ color: MyColors.background }}>Camera</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-      <View
-        style={{
-          marginTop: 40,
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 20,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{ marginLeft: 10 }}
-        >
-          <Ionicons
-            name={"arrow-back-outline"}
-            size={30}
-            color={MyColors.text}
+    <ScrollView showsVerticalScrollIndicator={false}>
+      {loader ? (
+        <ScreenLoaderComponent />
+      ) : (
+        <View style={styles.root}>
+          <Text style={styles.title}>Create an Account</Text>
+          <InputComponent
+            placeholder="userName"
+            value={userName}
+            setValue={setUserName}
+            minLength={"L"}
           />
-        </TouchableOpacity>
-        <Text style={styles.loginText}>Registration</Text>
-      </View>
-      <KeyboardAwareScrollView>
-        <View style={{ alignItems: "center" }}>
-          <View style={styles.addImageView}>
-            <TouchableOpacity
-              onPress={() => setModalVisible(true)}
-              style={styles.addImageButton}
-            >
-              {avatarUri == "" ? (
-                <Image
-                  source={require("../assets/add_photo.png")}
-                  style={styles.addImageButton}
-                />
-              ) : (
-                <Image
-                  source={{ uri: avatarUri }}
-                  style={styles.addImageButton}
-                />
-              )}
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.inputName}>Name</Text>
-          <LinearGradient
-            style={styles.linearGradient}
-            colors={[MyColors.gradientStart, MyColors.gradientEnd]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-          >
-            <TextInput
-              style={styles.inputField}
-              onChangeText={setName}
-              value={name}
-              placeholder="John Doe"
-              placeholderTextColor={MyColors.text}
-              autoCapitalize="words"
-              autoCorrect={false}
-            />
-          </LinearGradient>
-          <Text style={styles.inputName}>Email</Text>
-          <LinearGradient
-            style={styles.linearGradient}
-            colors={[MyColors.gradientStart, MyColors.gradientEnd]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-          >
-            <TextInput
-              style={styles.inputField}
-              onChangeText={setEmail}
-              value={email}
-              placeholder="johndoe@example.com"
-              placeholderTextColor={MyColors.text}
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="email-address"
-            />
-          </LinearGradient>
-          <Text style={styles.inputName}>Username</Text>
-          <LinearGradient
-            style={styles.linearGradient}
-            colors={[MyColors.gradientStart, MyColors.gradientEnd]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-          >
-            <TextInput
-              style={styles.inputField}
-              onChangeText={setUsername}
-              value={username}
-              placeholder="johndoe"
-              placeholderTextColor={MyColors.text}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-          </LinearGradient>
-          <Text style={styles.inputName}>Password</Text>
-          <LinearGradient
-            style={styles.linearGradient}
-            colors={[MyColors.gradientStart, MyColors.gradientEnd]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-          >
-            <TextInput
-              style={styles.inputField}
-              onChangeText={setPassword}
-              value={password}
-              placeholder="******"
-              placeholderTextColor={MyColors.text}
-              secureTextEntry={hiddenPass}
-            />
-            <TouchableOpacity
-              style={{ alignSelf: "center", marginRight: 12 }}
-              onPress={hidePass}
-            >
-              <Ionicons name={eyeIcon} size={25} color={MyColors.text} />
-            </TouchableOpacity>
-          </LinearGradient>
-          <Text style={{ color: "red" }}>{error}</Text>
+          <InputComponent
+            placeholder="Password"
+            value={password}
+            setValue={setPassword}
+            secureTextEntry={true}
+            minLength={"L"}
+          />
+          <InputComponent
+            placeholder="Repeat Password"
+            value={passwordRepeat}
+            setValue={setPasswordRepeat}
+            secureTextEntry={true}
+            minLength={"L"}
+          />
+          <Text style={styles.error}>{screenError}</Text>
+          <ButtonComponent
+            text="Register"
+            onPress={onRegisterInPressed}
+            minLength={"L"}
+          />
+
+          <Text style={styles.text}>
+            By registering, you confirm that your accept our term and private
+            policy
+          </Text>
+
+          <SocialButtons />
+
+          <ButtonComponent
+            text="Have an Account already? Sign in here"
+            onPress={onSignIn}
+            type="tertiary"
+            minLength={"L"}
+          />
         </View>
-      </KeyboardAwareScrollView>
-      <View style={{ alignItems: "center", marginBottom: 20 }}>
-        <TouchableOpacity style={styles.button} onPress={register}>
-          <Text style={{ color: MyColors.text }}>Register</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      )}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "space-between",
-    backgroundColor: MyColors.background,
+  root: {
+    alignItems: "center",
+    padding: 25,
   },
-  loginText: {
-    color: MyColors.text,
-    fontSize: 40,
+
+  title: {
+    fontSize: 24,
     fontWeight: "bold",
+    color: "#051C60",
+    margin: 10,
   },
-  linearGradient: {
-    flexDirection: "row",
-    height: 52,
-    width: "80%",
-    borderRadius: 8,
+
+  text: {
+    color: "gray",
+    marginVertical: 10,
   },
-  inputName: {
-    alignSelf: "flex-start",
-    color: MyColors.gray,
-    fontSize: 12,
-    marginLeft: "13%",
-    marginTop: 12,
-    marginBottom: 5,
-  },
-  inputField: {
-    flex: 1,
-    padding: 10,
-    color: MyColors.text,
-  },
-  button: {
-    height: 52,
-    width: "80%",
-    margin: 12,
-    borderRadius: 8,
-    backgroundColor: MyColors.primary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  addImageView: {
-    aspectRatio: 1,
-    height: 150,
-    borderRadius: 75,
-    borderWidth: 1,
-    borderColor: MyColors.gray,
-  },
-  addImageButton: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 75,
-    aspectRatio: 1,
-    height: 150,
-  },
-  modalView: {
-    flexDirection: "row",
-    backgroundColor: MyColors.gray,
-    height: 140,
-    position: "absolute",
-    bottom: 5,
-    width: "100%",
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "space-around",
+
+  error: {
+    color: "tomato",
+    fontSize: 14,
   },
 });
-
-export default Register;
+export default SignUpScreen;

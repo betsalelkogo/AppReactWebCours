@@ -9,6 +9,9 @@ import {
   ScrollView,
   TextComponent,
 } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import PostModel, { Post } from "../model/PostModel";
 
 const PostDetails: FC<{ route: any; navigation: any }> = ({
@@ -16,7 +19,9 @@ const PostDetails: FC<{ route: any; navigation: any }> = ({
   navigation,
 }) => {
   const [post, setPost] = useState<Post>();
-  const postId = JSON.stringify(route.params.postId);
+  const postId = JSON.stringify(route.params.PostId)
+    .replace('"', "")
+    .replace('"', "");
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
       console.log("focus");
@@ -30,7 +35,7 @@ const PostDetails: FC<{ route: any; navigation: any }> = ({
       console.log("fetching finish");
     });
     return unsubscribe;
-  }, [post]);
+  }, []);
   const onCancellCallback = () => {
     navigation.goBack();
   };
@@ -40,7 +45,7 @@ const PostDetails: FC<{ route: any; navigation: any }> = ({
         <View>
           {post?.image == "" && (
             <Image
-              source={require("../assets/avatar.png")}
+              source={require("../assets/post.png")}
               style={styles.avatar}
             ></Image>
           )}
@@ -52,8 +57,7 @@ const PostDetails: FC<{ route: any; navigation: any }> = ({
           )}
         </View>
 
-        <TextComponent>{post?.title}</TextComponent>
-        <TextComponent>{post?.detail}</TextComponent>
+        <TextComponent>{post?.text}</TextComponent>
 
         <View style={styles.buttonesContainer}>
           <TouchableOpacity onPress={onCancellCallback} style={styles.button}>

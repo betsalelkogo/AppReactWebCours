@@ -14,23 +14,24 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import PostModel, { Post } from "../model/PostModel";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PostEdit: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
   console.log("My app is running");
-  const [id, setId] = useState(route.params.postId);
-  const [title, setTitle] = useState("");
-  const [detail, setDetail] = useState("");
+  const postId = JSON.stringify(route.params.PostId)
+    .replace('"', "")
+    .replace('"', "");
+  const [text, setText] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
   const [post, setPost] = useState<Post>();
-  const userName = route.params.userName;
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
       console.log("focus");
       try {
-        const post1 = await PostModel.getPostById(id);
+        const post1 = await PostModel.getPostById(postId);
         setPost(post1);
         console.log("fetching post complete");
       } catch (err) {
@@ -80,12 +81,12 @@ const PostEdit: FC<{ route: any; navigation: any }> = ({
 
   const onSaveCallback = async () => {
     console.log("save button was pressed");
+    const userId = await AsyncStorage.getItem("_USER_ID");
     const post: Post = {
-      id: id,
-      title: title,
-      userName: userName,
-      detail: detail,
-      image: "url",
+      userId: userId as String,
+      text: text,
+      image: "",
+      _id: postId,
     };
     try {
       if (avatarUri != "") {
@@ -95,7 +96,7 @@ const PostEdit: FC<{ route: any; navigation: any }> = ({
         console.log("got url from upload: " + url);
       }
       console.log("saving post");
-      await PostModel.addPost(post);
+      await PostModel.SavePost(post);
     } catch (err) {
       console.log("fail adding post: " + err);
     }
@@ -111,7 +112,7 @@ const PostEdit: FC<{ route: any; navigation: any }> = ({
         <View>
           {post?.image.toString() === "" && (
             <Image
-              source={require("../assets/avatar.png")}
+              source={require("../assets/post.png")}
               style={styles.avatar}
             ></Image>
           )}
@@ -129,21 +130,10 @@ const PostEdit: FC<{ route: any; navigation: any }> = ({
             <Ionicons name={"image"} style={styles.galleryButton} size={50} />
           </TouchableOpacity>
         </View>
-
         <TextInput
           style={styles.input}
-          value={id}
-          placeholder={"Post ID"}
-          onChangeText={setId}
-        />
-        <TextInput
-          style={styles.input}
-          value={post?.title + ""}
-          placeholder={"Post Title"}
-        />
-        <TextInput
-          style={styles.input}
-          value={post?.detail + ""}
+          value={post?.text + ""}
+          onChangeText={setText}
           placeholder={"Post Detail"}
         />
         <View style={styles.buttonesContainer}>

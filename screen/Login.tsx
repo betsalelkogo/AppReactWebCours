@@ -1,212 +1,209 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   View,
-  Text,
+  Image,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Alert,
+  useWindowDimensions,
+  ScrollView,
+  Text,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import MyColors from "../MyColors";
-import UserModel from "../model/UserModel";
-import { useAuth } from "../helper/AuthContext";
-
-const facebookPressed = () => {
-  alert("Facebook presed");
-};
-
-const googlePressed = () => {
-  alert("Google presed");
-};
-
-const Login: FC<{ route: any; navigation: any }> = ({ route, navigation }) => {
-  const auth = useAuth();
-  const [username, setUsername] = useState("");
+import { useNavigation } from "@react-navigation/native";
+import { NavigationScreens } from "../enum/index";
+import {
+  InputComponent,
+  ButtonComponent,
+  SocialButtons,
+  ScreenLoaderComponent,
+} from "../components/index";
+import UserApi from "../api/UserApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  GoogleSignin,
+  statusCodes,
+  GoogleSigninButton,
+} from "@react-native-google-signin/google-signin";
+//import app_icon from "../assets/app_icon.png";
+export const SignInScreen: FC<{}> = () => {
+  const [loader, activateLoader] = useState(false);
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [hiddenPass, setHiddenPass] = useState(true);
-  const [eyeIcon, setEyeIcon]: any = useState("eye-outline");
-  const [error, setError]: any = useState(auth.authData?.error);
+  const [screenError, setScreenError] = useState("");
+  const [userAvatar, setUserAvatr] = useState("");
+  const [gettingLoginStatus, setGettingLoginStatus] = useState(true);
 
-  const loginPressed = async () => {
-    await auth.login(username, password);
-  };
+  const navigation = useNavigation();
+  useEffect(() => {
+    // Initial configuration
+    GoogleSignin.configure({
+      // Mandatory method to call before calling signIn()
+      scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+      // Repleace with your webClientId
+      // Generated from Firebase console
+      webClientId:
+        "1000063937594-5m8o054oau13p58o03g4ggnmlvqbu3db.apps.googleusercontent.com", // client ID of type WEB for your server (needed to verify user ID and offline access)
+      offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+      forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+      accountName: "", // [Android] specifies an account name on the device that should be used
+      iosClientId: "<FROM DEVELOPER CONSOLE>", // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+      googleServicePlistPath: "", // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
+      openIdRealm: "", // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
+      profileImageSize: 120,
+    });
+  }, []);
 
-  const hidePass = () => {
-    setHiddenPass(!hiddenPass);
-    if (hiddenPass == true) {
-      setEyeIcon("eye-off-outline");
-    } else {
-      setEyeIcon("eye-outline");
+  const signInOnLoading = async () => {
+    activateLoader(true);
+    try {
+      const uId = await AsyncStorage.getItem("_USER_ID");
+      const rfsTkn = await AsyncStorage.getItem("_REFRESH_TKN");
+      if (!!uId) {
+        const response = await UserApi.LoginUserOnLoading(
+          uId,
+          rfsTkn as string
+        );
+        if (response.ok) {
+          setStorage(response.data);
+          navigation.navigate(NavigationScreens.TabNavigator as never);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      activateLoader(false);
     }
   };
 
+  const onSignInPressed = async () => {
+    console.log("SignIn");
+    try {
+      const response = await UserApi.LoginUser(userName, password);
+      console.log("SignIn- " + response.data, userName, password);
+      if (response.ok) {
+        console.log(response.data);
+        setStorage(response.data);
+        navigation.navigate(NavigationScreens.TabNavigator as never);
+      }
+    } catch (error: any) {
+      setScreenError(error?.response?.data?.messgae);
+      console.log(error);
+    }
+  };
+
+  const setStorage = (data: any) => {
+    AsyncStorage.setItem("_ACCESS_TKN", data?.access_token);
+    AsyncStorage.setItem("_REFRESH_TKN", data?.refresh_token);
+    AsyncStorage.setItem("_USER_ID", data._id);
+  };
+
+  const onSignUp = () => {
+    console.log("sign up");
+    navigation.navigate(NavigationScreens.SignUp as never);
+  };
+
+  const onSignInGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices({
+        // Check if device has Google Play Services installed
+        // Always resolves to true on iOS
+        showPlayServicesUpdateDialog: true,
+      });
+      const userInfo = await GoogleSignin.signIn();
+      console.log("User Info --> ", userInfo);
+      setUserAvatr(userInfo.user.photo as string);
+      setUserName(
+        ((userInfo.user.familyName as string) +
+          userInfo.user.givenName) as string
+      );
+    } catch (error: any) {
+      console.log("Message", JSON.stringify(error));
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        alert("User Cancelled the Login Flow");
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        alert("Signing In");
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        alert("Play Services Not Available or Outdated");
+      } else {
+        alert(error.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    signInOnLoading();
+    console.log("test");
+  }, []);
+
+  const { height } = useWindowDimensions();
   return (
-    <View style={styles.container}>
-      <View style={{ alignItems: "flex-start", marginTop: 40 }}>
-        <Text style={styles.loginText}>Welcome</Text>
-        <Text style={styles.loginText}>to BlogApp</Text>
-      </View>
-      <View style={{ alignItems: "center" }}>
-        <Text style={styles.inputName}>Username</Text>
-        <LinearGradient
-          style={styles.linearGradient}
-          colors={[MyColors.gradientStart, MyColors.gradientEnd]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-        >
-          <TextInput
-            style={styles.inputField}
-            onChangeText={setUsername}
-            value={username}
-            placeholder="johndoe"
-            placeholderTextColor={MyColors.text}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-        </LinearGradient>
-        <Text style={styles.inputName}>Password</Text>
-        <LinearGradient
-          style={styles.linearGradient}
-          colors={[MyColors.gradientStart, MyColors.gradientEnd]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-        >
-          <TextInput
-            style={styles.inputField}
-            onChangeText={setPassword}
-            value={password}
-            placeholder="******"
-            placeholderTextColor={MyColors.text}
-            secureTextEntry={hiddenPass}
-          />
-          <TouchableOpacity
-            style={{ alignSelf: "center", marginRight: 12 }}
-            onPress={hidePass}
-          >
-            <Ionicons name={eyeIcon} size={25} color={MyColors.text} />
-          </TouchableOpacity>
-        </LinearGradient>
-        <Text style={{ color: "red" }}>{error}</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            width: "80%",
-            height: 60,
-          }}
-        >
-          <View
-            style={{ flex: 1, height: 1, backgroundColor: MyColors.text }}
-          />
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.root}>
+        {loader ? (
+          <ScreenLoaderComponent />
+        ) : (
           <View>
-            <Text
-              style={{
-                marginLeft: 10,
-                marginRight: 10,
-                textAlign: "center",
-                color: MyColors.text,
-              }}
-            >
-              or
-            </Text>
+            <Image
+              source={{ uri: "asset:/app_icon.png" }}
+              style={[styles.logo, { height: height * 0.3 }]}
+              resizeMode="contain"
+            />
+            <InputComponent
+              placeholder="userName"
+              value={userName}
+              setValue={setUserName}
+              minLength={"L"}
+            />
+            <InputComponent
+              placeholder="Password"
+              value={password}
+              setValue={setPassword}
+              secureTextEntry={true}
+              minLength={"L"}
+            />
+            <Text style={styles.error}>{screenError}</Text>
+            <ButtonComponent
+              minLength={"L"}
+              text="Sign In"
+              onPress={onSignInPressed}
+            />
+            <GoogleSigninButton
+              style={{ width: 312, height: 48 }}
+              size={GoogleSigninButton.Size.Wide}
+              color={GoogleSigninButton.Color.Light}
+              onPress={onSignInGoogle}
+            />
+            <ButtonComponent
+              text="Create Account"
+              onPress={onSignUp}
+              type="tertiary"
+              minLength={"L"}
+            />
           </View>
-          <View
-            style={{ flex: 1, height: 1, backgroundColor: MyColors.text }}
-          />
-        </View>
-        <View style={[styles.register, { width: "85%" }]}>
-          <TouchableOpacity
-            style={{
-              margin: 12,
-              flex: 1,
-              alignItems: "center",
-              backgroundColor: MyColors.facebookButton,
-              padding: 10,
-              borderRadius: 8,
-            }}
-            onPress={facebookPressed}
-          >
-            <Ionicons name="logo-facebook" size={40} color={MyColors.text} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              margin: 12,
-              flex: 1,
-              alignItems: "center",
-              backgroundColor: MyColors.googleButton,
-              padding: 10,
-              borderRadius: 8,
-            }}
-            onPress={googlePressed}
-          >
-            <Ionicons name="logo-google" size={40} color={MyColors.text} />
-          </TouchableOpacity>
-        </View>
+        )}
       </View>
-      <View style={{ alignItems: "center", marginBottom: 20 }}>
-        <TouchableOpacity style={styles.button} onPress={loginPressed}>
-          <Text style={{ color: MyColors.text }}>Login</Text>
-        </TouchableOpacity>
-        <View style={styles.register}>
-          <Text style={{ color: MyColors.text }}>I'm a new user, </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-            <Text style={{ color: MyColors.primary }}>Registration</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "space-between",
-    backgroundColor: MyColors.background,
-  },
-  loginText: {
-    color: MyColors.text,
-    fontSize: 40,
-    fontWeight: "bold",
-    marginStart: "10%",
-  },
-  linearGradient: {
-    flexDirection: "row",
-    height: 52,
-    width: "80%",
-    borderRadius: 8,
-  },
-  inputName: {
-    alignSelf: "flex-start",
-    color: MyColors.gray,
-    fontSize: 12,
-    marginLeft: "13%",
-    marginTop: 12,
-    marginBottom: 5,
-  },
-  inputField: {
-    flex: 1,
-    padding: 10,
-    color: MyColors.text,
-  },
-  separator: {
-    borderBottomWidth: 1,
-    borderColor: MyColors.text,
-  },
-  button: {
-    height: 52,
-    width: "80%",
-    margin: 12,
-    borderRadius: 8,
-    backgroundColor: MyColors.primary,
+  root: {
     alignItems: "center",
-    justifyContent: "center",
+    padding: 25,
   },
-  register: {
-    flexDirection: "row",
+
+  container: {
+    minWidth: 300,
+  },
+
+  logo: {
+    width: 700,
+    maxHeight: 200,
+    maxWidth: 300,
+  },
+
+  error: {
+    color: "tomato",
+    fontSize: 14,
   },
 });
 
-export default Login;
+export default SignInScreen;

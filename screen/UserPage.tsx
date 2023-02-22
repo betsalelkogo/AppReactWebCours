@@ -1,150 +1,172 @@
-import { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   View,
   Text,
+  ScrollView,
   StyleSheet,
-  StatusBar,
   Image,
-  FlatList,
+  TextInput,
+  TouchableOpacity,
 } from "react-native";
-import MyColors from "../MyColors";
-import { ListItem } from "./MyPostsList";
+import UserApi from "../api/UserApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-type Post = {
-  name: String;
-  id: String;
-  image: any;
-  avatar: any;
-  text: String;
-};
+export const UserProfileScreen: FC<{ route: any; navigation: any }> = ({
+  route,
+  navigation,
+}) => {
+  const [loader, activateLoader] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [avatarUri, setAvatarUri] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [screenMessage, setScreenMessage] = useState("");
+  const [screenError, setScreenError] = useState("");
+  let userId: string | null;
+  const getMetaData = async () => {
+    activateLoader(true);
+    try {
+      userId = await AsyncStorage.getItem("_USER_ID");
+      if (!!userId) {
+        const response = await UserApi.GetUserData(userId);
+        if (response.ok) {
+          var resData: any = response?.data;
+          setUserName(resData?.userName);
+          setAvatarUri(resData?.avatarUri);
+          onUpdateProfile();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      activateLoader(false);
+    }
+  };
 
-const posts: Array<Post> = [
-  {
-    name: "Misha",
-    id: "1",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-  },
-  {
-    name: "Vasya",
-    id: "2",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "String",
-  },
-  {
-    name: "Misha",
-    id: "3",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-  },
-  {
-    name: "Vasya",
-    id: "4",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "String",
-  },
-  {
-    name: "Misha",
-    id: "5",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-  },
-  {
-    name: "Vasya",
-    id: "6",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "String",
-  },
-  {
-    name: "Misha",
-    id: "7",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-  },
-  {
-    name: "Vasya",
-    id: "8",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "String",
-  },
-  {
-    name: "Misha",
-    id: "9",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-  },
-  {
-    name: "Vasya",
-    id: "10",
-    image: require("../assets/post.png"),
-    avatar: require("../assets/avatar.png"),
-    text: "String",
-  },
-];
+  const onUpdateProfile = async () => {
+    //TODO: validation
+    if (userName && password && password === passwordRepeat) {
+      activateLoader(true);
+      try {
+        const response = await UserApi.UpdateUserProfile(
+          userName,
+          password,
+          avatarUri,
+          userId as string
+        );
+        var resData: any = response?.data;
+        if (resData?.flag) {
+          setScreenMessage("Great, your profile has been updated!");
+        } else {
+          setScreenError("Something went wrong updating your profile");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        activateLoader(false);
+      }
+    } else {
+      setScreenError("Wrong Credentials");
+    }
+  };
 
-const footerComponent = () => {
-  return <View style={{ height: 80 }} />;
-};
-
-const UserPage: FC = () => {
+  useEffect(() => {
+    getMetaData();
+  });
+  const onCancellCallback = () => {
+    navigation.goBack();
+  };
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          borderBottomColor: "black",
-          borderBottomWidth: 2,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          source={require("../assets/avatar.png")}
-          style={{ height: 80, width: 80, borderRadius: 40, margin: 20 }}
-        />
+    <ScrollView>
+      <View style={styles.container}>
         <View>
-          <Text style={styles.bioText}>Vasya Pupkin</Text>
-          <Text style={styles.bioText}>vasya_pupkin@gmail.com</Text>
-          <Text style={[{ marginBottom: 10 }, { ...styles.bioText }]}>
-            054-8302399
-          </Text>
+          {avatarUri == "" && (
+            <Image
+              source={require("../assets/avatar.png")}
+              style={styles.avatar}
+            ></Image>
+          )}
+          {avatarUri != "" && (
+            <Image
+              source={{ uri: avatarUri + "" }}
+              style={styles.avatar}
+            ></Image>
+          )}
+        </View>
+
+        <TextInput
+          style={styles.input}
+          onChangeText={setUserName}
+          value={userName}
+          placeholder={"User Name"}
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={setPassword}
+          value={password}
+          placeholder={"Your Password"}
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={setPasswordRepeat}
+          value={passwordRepeat}
+          placeholder={"Your Password Repeat"}
+        />
+
+        <View style={styles.buttonesContainer}>
+          <TouchableOpacity onPress={onCancellCallback} style={styles.button}>
+            <Text style={styles.buttonText}>RETURN</Text>
+          </TouchableOpacity>
         </View>
       </View>
-      <FlatList
-        data={posts}
-        keyExtractor={(post) => post.id.toString()}
-        ListFooterComponent={footerComponent}
-        renderItem={({ item }) => (
-          <ListItem
-            name={item.name}
-            id={item.id}
-            image={item.image}
-            avatar={item.avatar}
-            text={item.text}
-          />
-        )}
-      ></FlatList>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: MyColors.background,
   },
-  bioText: {
-    marginLeft: 10,
-    color: MyColors.text,
+  avatar: {
+    height: 250,
+    resizeMode: "contain",
+    alignSelf: "center",
+    width: "100%",
+  },
+  cameraButton: {
+    position: "absolute",
+    bottom: -10,
+    left: 10,
+    width: 50,
+    height: 50,
+  },
+  galleryButton: {
+    position: "absolute",
+    bottom: -10,
+    right: 10,
+    width: 50,
+    height: 50,
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonesContainer: {
+    flexDirection: "row",
+  },
+  button: {
+    flex: 1,
+    margin: 12,
+    padding: 12,
+    backgroundColor: "blue",
+    borderRadius: 10,
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "white",
   },
 });
-
-export default UserPage;
+export default UserProfileScreen;

@@ -5,48 +5,40 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity,
-  Button,
-  Alert,
-  TextInput,
   FlatList,
   TouchableHighlight,
 } from "react-native";
 
 import PostModel, { Post } from "../model/PostModel";
 
-export const ListItem: FC<{
-  id: String;
-  detail: String;
-  title: String;
+const ListItem: FC<{
+  _id: String;
+  userId: String;
+  text: String;
   image: String;
   onRowSelected: (id: String) => void;
-}> = ({ title, id, detail, image, onRowSelected }) => {
+}> = ({ _id, userId, text, image, onRowSelected }) => {
   const onClick = () => {
-    console.log("in the row: row was selected " + id);
-    onRowSelected(id);
+    console.log("int he row: row was selected " + _id);
+    onRowSelected(_id);
   };
 
   console.log("image: " + image);
   return (
     <TouchableHighlight onPress={onClick} underlayColor={"gainsboro"}>
       <View style={styles.listRow}>
-        {image == "" && (
+        {image == undefined && (
           <Image
             style={styles.listRowImage}
-            source={require("../assets/avatar.png")}
+            source={require("../assets/post.png")}
           />
         )}
         {image != "" && (
-          <Image
-            style={styles.listRowImage}
-            source={{ uri: image.toString() }}
-          />
+          <Image style={styles.listRowImage} source={{ uri: image + "" }} />
         )}
 
         <View style={styles.listRowTextContainer}>
-          <Text style={styles.listRowName}>{title}</Text>
-          <Text style={styles.listRowId}>{detail}</Text>
+          <Text style={styles.listRowName}>{text}</Text>
         </View>
       </View>
     </TouchableHighlight>
@@ -59,23 +51,17 @@ const PostList: FC<{ route: any; navigation: any }> = ({
 }) => {
   const onRowSelected = (id: String) => {
     console.log("in the list: row was selected " + id);
-    navigation.navigate("PostsDetails", {
-      postId: id,
-    });
+    navigation.navigate("PostDetails", { PostId: id });
   };
 
   const [posts, setPosts] = useState<Array<Post>>();
-  const userName = JSON.stringify(route.params?.userName);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
       console.log("focus");
       let posts: Post[] = [];
       try {
-        posts = await PostModel.getAllPosts();
-        posts.filter((post) => {
-          post.userEmail === userName;
-        });
+        posts = await PostModel.GetAllPosts();
         console.log("fetching posts complete");
       } catch (err) {
         console.log("fail fetching posts " + err);
@@ -90,14 +76,14 @@ const PostList: FC<{ route: any; navigation: any }> = ({
     <FlatList
       style={styles.flatlist}
       data={posts}
-      keyExtractor={(post) => post.id.toString()}
+      keyExtractor={(post) => post._id.toString()}
       renderItem={({ item }) => (
         <ListItem
-          title={item.title}
-          detail={item.detail}
+          text={item.text}
           image={item.image}
           onRowSelected={onRowSelected}
-          id={item.id}
+          _id={item._id}
+          userId={item.userId}
         />
       )}
     ></FlatList>
@@ -132,7 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   listRowName: {
-    fontSize: 30,
+    fontSize: 15,
   },
   listRowId: {
     fontSize: 25,

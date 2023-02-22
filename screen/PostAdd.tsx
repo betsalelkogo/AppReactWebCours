@@ -14,17 +14,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import PostModel, { Post } from "../model/PostModel";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PostAdd: FC<{ route: any; navigation: any }> = ({
   route,
   navigation,
 }) => {
   console.log("My app is running");
-  const [id, setId] = useState("");
-  const [title, setTitle] = useState("");
-  const [detail, setDetail] = useState("");
+  const [text, setText] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
-  const userEmail = JSON.stringify(route.params?.userEmail);
 
   const askPermission = async () => {
     try {
@@ -66,12 +64,12 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
 
   const onSaveCallback = async () => {
     console.log("save button was pressed");
+    const userId = await AsyncStorage.getItem("_USER_ID");
     const post: Post = {
-      id: id,
-      userEmail: userEmail,
-      title: title,
-      detail: detail,
+      userId: userId as String,
+      text: text,
       image: "url",
+      _id: "",
     };
     try {
       if (avatarUri != "") {
@@ -81,7 +79,7 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
         console.log("got url from upload: " + url);
       }
       console.log("saving post");
-      await PostModel.addPost(post);
+      await PostModel.SavePost(post);
     } catch (err) {
       console.log("fail adding post: " + err);
     }
@@ -97,7 +95,7 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
         <View>
           {avatarUri == "" && (
             <Image
-              source={require("../assets/avatar.png")}
+              source={require("../assets/post.png")}
               style={styles.avatar}
             ></Image>
           )}
@@ -115,21 +113,9 @@ const PostAdd: FC<{ route: any; navigation: any }> = ({
 
         <TextInput
           style={styles.input}
-          onChangeText={setId}
-          value={id}
-          placeholder={"Post ID"}
-        />
-        <TextInput
-          style={styles.input}
-          onChangeText={setTitle}
-          value={title}
-          placeholder={"Post Title"}
-        />
-        <TextInput
-          style={styles.input}
-          onChangeText={setDetail}
-          value={detail}
-          placeholder={"Post Detail"}
+          onChangeText={setText}
+          value={text}
+          placeholder={"Your Post"}
         />
         <View style={styles.buttonesContainer}>
           <TouchableOpacity onPress={onCancellCallback} style={styles.button}>
@@ -169,7 +155,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   input: {
-    height: 40,
+    height: 80,
     margin: 12,
     borderWidth: 1,
     padding: 10,
