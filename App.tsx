@@ -1,16 +1,11 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { useState } from "react";
-import { FC } from "react";
+import { AuthProvider } from "./src/context/AuthContext";
 
-import Auth from "./screen/Auth";
-import Tabs from "./components/Tabs";
+import NavigationIndex from "./src/components/navigation/Index";
 
-const App: FC<{ route: any; navigation: any }> = ({ route, navigation }) => {
-  return (
-    <NavigationContainer>
-      <Tabs route={route} navigation={navigation} />
-    </NavigationContainer>
-  );
-};
+const App = () => (
+  <AuthProvider>
+    <NavigationIndex />
+  </AuthProvider>
+);
 
 export default App;
