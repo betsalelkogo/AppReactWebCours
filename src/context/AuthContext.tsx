@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
 import authApi from "../api/AuthApi";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../utils/constants";
+import { User } from "../utils/types/@User";
 
 type UserInfo = {
   accessToken: string;
@@ -19,6 +20,7 @@ type AuthContextType = {
   ) => Promise<true | string> | null;
   login: (email: string, password: string) => Promise<true | string> | null;
   logout: () => void;
+  currentUser?: User;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -46,8 +48,8 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
     setIsLoading(true);
     const res = await authApi.signUpUser({ email, password, name });
 
-    const data: any = res.data;
-    if (data.err) {
+    const data: any = res?.data;
+    if (data?.err) {
       setIsLoading(false);
       return data.err as string;
     }
@@ -58,7 +60,7 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    const res = await authApi.signInUser({ email, password });
+    const res = await authApi.signInUser(email, password);
 
     const data: any = res.data;
 

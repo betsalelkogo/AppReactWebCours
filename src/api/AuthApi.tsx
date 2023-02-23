@@ -26,4 +26,35 @@ const logoutUser = async (token: string) => {
   });
 };
 
-export default { logoutUser, signInUser, signUpUser };
+const fetchUserInfo = async (accessToken: string) => {
+  const response = await fetch(
+    "https://www.googleapis.com/oauth2/v3/userinfo",
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return await response.json();
+};
+
+interface iGoogleSign {
+  email: string;
+  name: string;
+}
+const googleSignUser = async (data: iGoogleSign) => {
+  const { email, name } = data;
+  return apiClient.post(`/${URL_PATHS.auth}/google-sign-user`, { email, name });
+};
+
+export default {
+  logoutUser,
+  signInUser,
+  signUpUser,
+  fetchUserInfo,
+  googleSignUser,
+};

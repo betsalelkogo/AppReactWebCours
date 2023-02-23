@@ -1,11 +1,12 @@
 {
   "expo": {
     "name": "chat app",
-    "slug": "chet app",
+    "slug": "chat_app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/app_icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "com.test.chatapp",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -16,13 +17,15 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.test.chatapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/app_icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "bundleIdentifier": "com.test.chatapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
