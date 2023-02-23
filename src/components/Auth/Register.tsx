@@ -12,7 +12,7 @@ import { theme } from "../Core/theme";
 import authApi from "../../api/AuthApi";
 
 import { isEmailValid } from "../../utils/validators";
-import { iCurrentScreen } from "../Screens/UnAuthScreen";
+import { iCurrentScreen } from "../Screens/AuthScreen";
 import { AuthContext } from "../../context/AuthContext";
 
 const EMAIL = "email";
@@ -158,7 +158,7 @@ const RegisterScreen = ({ setScreen }: Props) => {
         </TouchableOpacity>
 
         <View style={{ marginTop: 2 }}>
-          <Button title="Signup" onPress={handleSubmit(onSubmit)} />
+          <Button title="Register" onPress={handleSubmit(onSubmit)} />
         </View>
 
         {errMsg.msg && (
@@ -175,7 +175,7 @@ const RegisterScreen = ({ setScreen }: Props) => {
           }}
           onPress={loginWithGoogle}
         >
-          <Ionicons name="logo-google" size={35} color="#f4c20d" />
+          <Ionicons name="logo-google" size={35} color="#1679d3" />
         </TouchableOpacity>
       </View>
     </AuthBackground>

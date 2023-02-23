@@ -17,16 +17,16 @@ const AuthNavigationContainer = () => (
           let iconName = "";
           switch (route.name) {
             case "All Posts":
-              iconName = "newspaper-outline";
+              iconName = "list";
               break;
             case "Add Post":
-              iconName = "add-outline";
+              iconName = "add-circle-outline";
               break;
             case "My Profile":
               iconName = "person-outline";
               break;
             case "Chat":
-              iconName = "chatbubbles-outline";
+              iconName = "chatbox";
               break;
             default:
               iconName = "help-outline";
@@ -35,7 +35,7 @@ const AuthNavigationContainer = () => (
 
           return (
             <Ionicons
-              name={iconName}
+              name={iconName + ""}
               size={25}
               color={focused ? theme.colors.iconFocused : color}
               style={{ marginTop: 10 }}

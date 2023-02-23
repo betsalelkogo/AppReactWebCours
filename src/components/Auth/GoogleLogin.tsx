@@ -26,13 +26,7 @@ const GoogleSignInButton = () => {
       email: userInfo.email,
       name: userInfo.name,
     });
-
-    // if(res.data.status === 200) {
-    // write user to the AuthContext
-    // }
     return true;
-
-    return false;
   };
 
   useEffect(() => {
@@ -58,7 +52,7 @@ const GoogleSignInButton = () => {
         promptAsync();
       }}
     >
-      <Ionicons name="logo-google" size={35} color="#f4c20d" />
+      <Ionicons name="logo-google" size={40} color="#1679d3" />
     </TouchableOpacity>
   );
 };

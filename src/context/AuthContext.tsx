@@ -46,7 +46,9 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
     name: string
   ): Promise<true | string> => {
     setIsLoading(true);
+    console.log("register");
     const res = await authApi.signUpUser({ email, password, name });
+    console.log(("register" + res.data) as string);
 
     const data: any = res?.data;
     if (data?.err) {
@@ -60,7 +62,7 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    const res = await authApi.signInUser(email, password);
+    const res = await authApi.signInUser({ email, password });
 
     const data: any = res.data;
 

@@ -13,7 +13,7 @@ const Button = ({ color, onPress, title }: Props) => {
     <TouchableOpacity
       style={[
         styles.button,
-        { backgroundColor: color || theme.colors.primary },
+        { backgroundColor: "#1679d3" || theme.colors.primary },
       ]}
       onPress={onPress}
     >

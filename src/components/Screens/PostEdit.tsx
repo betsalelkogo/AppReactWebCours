@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import PostModel, { Post } from "../model/PostModel";
+import PostModel, { Post } from "../../model/PostModel";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -96,7 +96,7 @@ const PostEdit: FC<{ route: any; navigation: any }> = ({
         console.log("got url from upload: " + url);
       }
       console.log("saving post");
-      await PostModel.SavePost(post);
+      await PostModel.addPost(post);
     } catch (err) {
       console.log("fail adding post: " + err);
     }

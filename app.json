@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "chat app",
+    "name": "chat_app",
     "slug": "chat_app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/app_icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "com.test.chatapp",
+    "scheme": "com.test.chat_app",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -18,17 +18,22 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.test.chatapp"
+      "bundleIdentifier": "com.test.chat_app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/app_icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "bundleIdentifier": "com.test.chatapp"
+      "bundleIdentifier": "com.test.chat_app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "48a905b9-1419-4484-afd2-3e6d80723630"
+      }
     }
   }
 }

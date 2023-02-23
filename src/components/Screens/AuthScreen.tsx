@@ -15,7 +15,7 @@ const AuthScreen = () => {
   const [currentScreen, setCurrentScreen] = useState<iCurrentScreen>(LOGIN);
 
   const googleSignIn = async () => {
-    const [request, response, promptAsync] = await Google.useAuthRequest({
+    const [request, response, promptAsync] = Google.useAuthRequest({
       expoClientId: "",
       iosClientId: "",
       androidClientId: "",

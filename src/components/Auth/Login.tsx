@@ -3,7 +3,6 @@ import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useForm } from "react-hook-form";
 import { TextInput } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
-import Ionicons from "@expo/vector-icons/Ionicons";
 
 import AppLogo from "../Shared/Logo";
 import AuthBackground from "../Shared/AuthBackground";
@@ -14,7 +13,6 @@ import { theme } from "../Core/theme";
 
 import { isEmailValid } from "../../utils/validators";
 import { iCurrentScreen } from "../Screens/AuthScreen";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../utils/constants";
 import { AuthContext } from "../../context/AuthContext";
 import GoogleSignInButton from "./GoogleLogin";
 
@@ -81,13 +79,12 @@ const LoginScreen = ({ setScreen }: Props) => {
       <Spinner visible={isLoading} />
       <View style={styles.container}>
         <AppLogo />
-        <Title text="Hello, Welcome Back!" />
+        <Title text="Welcome to Live Chat" />
         <TextInput
           autoComplete="email"
           keyboardType="email-address"
           textContentType="emailAddress"
           placeholder="Email"
-          label="Email"
           onChangeText={onChangeField("email")}
           style={[
             styles.input,

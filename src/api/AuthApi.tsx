@@ -1,11 +1,12 @@
 import apiClient from "./ClientApi";
 import { URL_PATHS } from "../utils/constants";
 
-const signUpUser = async (data: {
+interface iSignup {
   email: string;
   password: string;
   name: string;
-}) => {
+}
+const signUpUser = async (data: iSignup) => {
   const { email, password, name } = data;
   return apiClient.post(`/${URL_PATHS.auth}/register`, {
     email,
@@ -14,7 +15,12 @@ const signUpUser = async (data: {
   });
 };
 
-const signInUser = async (email: string, password: string) => {
+interface iSigin {
+  email: string;
+  password: string;
+}
+const signInUser = async (data: iSigin) => {
+  const { email, password } = data;
   return apiClient.post(`/${URL_PATHS.auth}/login`, { email, password });
 };
 

@@ -14,7 +14,7 @@ const Title = ({ text }: Props) => {
 const styles = StyleSheet.create({
   header: {
     fontSize: 21,
-    color: theme.colors.primary,
+    color: "#1679d3",
     fontWeight: "bold",
     paddingVertical: 12,
   },

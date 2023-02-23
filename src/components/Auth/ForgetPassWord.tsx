@@ -48,7 +48,7 @@ const ForgetPasswordScreen = ({ setScreen }: Props) => {
       return;
     }
 
-    const res = await authApi.signInUser(email, password);
+    const res = await authApi.signInUser({ email, password });
     const data: any = res.data;
     if (data.err) {
       setErrMsg({ field: "", msg: data.err });
@@ -137,7 +137,7 @@ const ForgetPasswordScreen = ({ setScreen }: Props) => {
           }}
           onPress={loginWithGoogle}
         >
-          <Ionicons name="logo-google" size={35} color="#f4c20d" />
+          <Ionicons name="logo-google" size={35} color="#1679d3" />
         </TouchableOpacity>
       </View>
     </AuthBackground>

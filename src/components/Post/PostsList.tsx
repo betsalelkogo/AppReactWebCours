@@ -9,7 +9,7 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-import PostModel, { Post } from "../model/PostModel";
+import PostModel, { Post } from "../../model/PostModel";
 
 const ListItem: FC<{
   _id: String;
@@ -61,7 +61,7 @@ const PostList: FC<{ route: any; navigation: any }> = ({
       console.log("focus");
       let posts: Post[] = [];
       try {
-        posts = await PostModel.GetAllPosts();
+        posts = await PostModel.getAllPosts();
         console.log("fetching posts complete");
       } catch (err) {
         console.log("fail fetching posts " + err);
