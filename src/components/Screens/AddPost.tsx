@@ -90,10 +90,10 @@ const AddPost: FC<{ route: any; navigation: any }> = ({
         console.log("got url from upload: " + url);
       }
       console.log("saving Post");
-      post;
     } catch (err) {
       console.log("fail adding post: " + err);
     }
+
     navigation.goBack();
   };
 
