@@ -16,17 +16,17 @@ const AuthNavigationContainer = () => (
         tabBarIcon: ({ focused, color, size }) => {
           let iconName = "";
           switch (route.name) {
-            case "All Posts":
-              iconName = "list";
+            case "Posts List":
+              iconName = "newspaper-outline";
               break;
             case "Add Post":
-              iconName = "add-circle-outline";
+              iconName = "add-outline";
               break;
-            case "My Profile":
+            case "User Page":
               iconName = "person-outline";
               break;
-            case "Chat":
-              iconName = "chatbox";
+            case "Chat Room":
+              iconName = "chatbubbles-outline";
               break;
             default:
               iconName = "help-outline";
@@ -35,7 +35,7 @@ const AuthNavigationContainer = () => (
 
           return (
             <Ionicons
-              name={iconName + ""}
+              name={iconName}
               size={25}
               color={focused ? theme.colors.iconFocused : color}
               style={{ marginTop: 10 }}
@@ -47,34 +47,34 @@ const AuthNavigationContainer = () => (
       })}
     >
       <Tab.Screen
-        name="Posts List"
+        name={"Posts List"}
         component={AllPostsScreen}
         options={{
-          title: "Posts List",
+          title: "",
           headerShown: false,
         }}
       />
       <Tab.Screen
-        name="Chat Room"
+        name={"Chat Room"}
         component={ChatScreen}
         options={{
-          title: "Chat Room",
+          title: "",
           headerShown: false,
         }}
       />
       <Tab.Screen
-        name="Add Post"
+        name={"Add Post"}
         component={AddPostScreen}
         options={{
-          title: "Add a new Post",
+          title: "",
           headerShown: false,
         }}
       />
       <Tab.Screen
-        name="My Profile"
+        name={"User Page"}
         component={MyProfileScreen}
         options={{
-          title: "My Profile",
+          title: "",
           headerShown: false,
         }}
       />

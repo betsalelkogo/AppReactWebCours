@@ -1,3 +1,4 @@
+import { iEditPost } from "../utils/types/@Post";
 import apiClient from "./ClientApi";
 
 const getAllPosts = async () => {
@@ -11,6 +12,10 @@ const addPost = async (postJson: any) => {
   return apiClient.post("/post", postJson);
 };
 
+const editPost = async (postId: string, editedPost: iEditPost) => {
+  return apiClient.put("/post/" + postId, editedPost);
+};
+
 const uploadImage = async (image: any) => {
   return apiClient.post("/file/file", image);
 };
@@ -20,4 +25,5 @@ export default {
   addPost,
   uploadImage,
   getPostById,
+  editPost,
 };

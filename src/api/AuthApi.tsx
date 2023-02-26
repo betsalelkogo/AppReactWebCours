@@ -1,5 +1,4 @@
 import apiClient from "./ClientApi";
-import { URL_PATHS } from "../utils/constants";
 
 interface iSignup {
   email: string;

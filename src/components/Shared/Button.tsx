@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: "#1679d3",
+    backgroundColor: theme.colors.primary,
   },
   text: {
     fontSize: 16,

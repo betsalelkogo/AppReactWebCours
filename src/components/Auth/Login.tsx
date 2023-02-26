@@ -67,8 +67,6 @@ const LoginScreen = ({ setScreen }: Props) => {
     []
   );
 
-  const loginWithGoogle = () => {};
-
   useEffect(() => {
     register("email");
     register("password");
@@ -79,7 +77,7 @@ const LoginScreen = ({ setScreen }: Props) => {
       <Spinner visible={isLoading} />
       <View style={styles.container}>
         <AppLogo />
-        <Title text="Welcome to Live Chat" />
+        <Title>Hello, Welcome Back!</Title>
         <TextInput
           autoComplete="email"
           keyboardType="email-address"
@@ -97,7 +95,6 @@ const LoginScreen = ({ setScreen }: Props) => {
 
         <TextInput
           secureTextEntry
-          label="Password"
           style={[
             styles.input,
             {
@@ -129,13 +126,17 @@ const LoginScreen = ({ setScreen }: Props) => {
         </TouchableOpacity>
 
         <View style={{ marginTop: 2 }}>
-          <Button title="Login" onPress={handleSubmit(onSubmit)} />
+          <Button
+            title="Login"
+            onPress={handleSubmit(onSubmit)}
+            disabled={isLoading}
+          />
         </View>
 
         {errMsg.msg && (
           <Text style={{ color: theme.colors.error }}>{errMsg.msg}</Text>
         )}
-        <GoogleSignInButton />
+        <GoogleSignInButton disabled={isLoading} />
       </View>
     </AuthBackground>
   );

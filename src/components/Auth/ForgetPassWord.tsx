@@ -74,13 +74,12 @@ const ForgetPasswordScreen = ({ setScreen }: Props) => {
     <AuthBackground>
       <View style={styles.container}>
         <AppLogo />
-        <Title text="Hello, Welcome Back!" />
+        <Title text="Hello, Welcome to ChatAPP" />
         <TextInput
           autoComplete="email"
           keyboardType="email-address"
           textContentType="emailAddress"
           placeholder="Email"
-          label="Email"
           onChangeText={onChangeField("email")}
           style={[
             styles.input,

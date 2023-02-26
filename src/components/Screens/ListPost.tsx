@@ -23,7 +23,7 @@ const AllPostsScreen = ({ navigation }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleCreatePost = () => {
-    navigation.navigate("AddPost");
+    navigation.navigate("Add Post");
   };
 
   const onRefresh = () => {

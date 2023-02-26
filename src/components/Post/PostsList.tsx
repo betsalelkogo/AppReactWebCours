@@ -1,6 +1,6 @@
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
-import PostDetails from "./PostDetails";
+import PostItem from "./Post";
 
 import Button from "../Shared/Button";
 import LottieAnimation from "../Shared/Lottie";
@@ -29,7 +29,7 @@ const AllPosts = ({ navToCreatePost, posts, title }: Props) => {
         <>
           <Title style={{ marginLeft: 15 }}>{title || "All Posts"}</Title>
           {posts.map((post) => (
-            <PostDetails key={post._id} post={post} />
+            <PostItem key={post._id} post={post} />
           ))}
         </>
       )}

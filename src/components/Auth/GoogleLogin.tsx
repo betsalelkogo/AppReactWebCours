@@ -1,19 +1,26 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 
 // @ expo
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import Ionicons from "@expo/vector-icons/Ionicons";
+
 // @ Constants
 import { theme } from "../Core/theme";
 
-// @ Api
-import authApi from "../../api/AuthApi";
+// @ Context
+import { AuthContext } from "../../context/AuthContext";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const GoogleSignInButton = () => {
+interface Props {
+  disabled?: boolean;
+}
+
+const GoogleSignInButton = ({ disabled }: Props) => {
+  const { googleSignin } = useContext(AuthContext);
+
   const [_, response, promptAsync] = Google.useAuthRequest({
     expoClientId: process.env.EXPO_CLIENT_ID,
     iosClientId: process.env.OAUTH_IOS_CLIENT_ID,
@@ -21,12 +28,7 @@ const GoogleSignInButton = () => {
   });
 
   const logGoogleUser = async (accessToken: string): Promise<boolean> => {
-    const userInfo = await authApi.fetchUserInfo(accessToken);
-    const res = await authApi.googleSignUser({
-      email: userInfo.email,
-      name: userInfo.name,
-    });
-    return true;
+    return (await googleSignin(accessToken)) || false;
   };
 
   useEffect(() => {
@@ -48,11 +50,12 @@ const GoogleSignInButton = () => {
         padding: 7,
         borderColor: theme.colors.primary,
       }}
+      disabled={disabled}
       onPress={() => {
         promptAsync();
       }}
     >
-      <Ionicons name="logo-google" size={40} color="#1679d3" />
+      <Ionicons name="logo-google" size={35} color="#1679d3" />
     </TouchableOpacity>
   );
 };

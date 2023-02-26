@@ -7,7 +7,7 @@ interface Props {
   image: string;
 }
 
-const PostDetails = ({ image, text }: Props) => (
+const PostInfo = ({ image, text }: Props) => (
   <View style={styles.container}>
     <Text style={styles.text}>{text}</Text>
     <Image source={{ uri: image }} style={styles.image} />
@@ -39,4 +39,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostDetails;
+export default PostInfo;

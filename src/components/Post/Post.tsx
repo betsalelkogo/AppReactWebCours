@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 
-import PostDetails from "./PostDetails";
+import PostInfo from "./PostDetails";
 import PostOwnerInfo from "./PostOwner";
 
 import { Post } from "../../utils/types/@Post";
@@ -20,7 +20,7 @@ const PostItem = ({ post }: Props) => {
       />
 
       <View style={{ alignItems: "center" }}>
-        <PostDetails text={text} image={post.image || ""} />
+        <PostInfo text={text} image={post.image || ""} />
       </View>
     </View>
   );

@@ -64,7 +64,7 @@ const AppImagePicker = ({
   return (
     <>
       <Avatar.Image
-        source={image ? { uri: image } : require("../../assets/avatar.png")}
+        source={image ? { uri: image } : require("../../assets/ava.png")}
         size={previewSize}
       />
 

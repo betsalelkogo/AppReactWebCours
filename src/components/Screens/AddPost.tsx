@@ -16,7 +16,7 @@ import Button from "../Shared/Button";
 import AppImagePicker from "../Shared/ImagePicker";
 import Title from "../Shared/Header";
 
-const AddPost = () => {
+const AddPostScreen = () => {
   const [post, setPost] = useState<Post>({ text: "", image: "" });
 
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -42,7 +42,7 @@ const AddPost = () => {
     const res = await postApi.addPost({ text: post.text });
     const newPostData: Post | any = res.data;
     if (newPostData._id) {
-      const imageUrl = await postApi.uploadImage(post.image, newPostData._id);
+      const imageUrl = await postApi.uploadImage(post.image);
 
       if (imageUrl) {
         const res = await postApi.editPost(newPostData._id, {
@@ -129,4 +129,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddPost;
+export default AddPostScreen;

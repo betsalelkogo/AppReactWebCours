@@ -31,7 +31,7 @@ const MyProfileScreen: FC<{ route: any; navigation: any }> = ({
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const handleCreatePost = () => {
-    navigation.navigate("AddPost");
+    navigation.navigate("Add Post");
   };
 
   const onRefresh = () => getUserInfo(userInfo.id);

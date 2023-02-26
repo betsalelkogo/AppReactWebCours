@@ -2,18 +2,19 @@ import React, { useEffect, useCallback, useState, useContext } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useForm } from "react-hook-form";
 import { TextInput } from "react-native-paper";
+
 import Spinner from "react-native-loading-spinner-overlay";
-import Ionicons from "@expo/vector-icons/Ionicons";
+
 import AppLogo from "../Shared/Logo";
 import AuthBackground from "../Shared/AuthBackground";
 import Button from "../Shared/Button";
-import Title from "../Shared/Header";
+
 import { theme } from "../Core/theme";
-import authApi from "../../api/AuthApi";
 
 import { isEmailValid } from "../../utils/validators";
 import { iCurrentScreen } from "../Screens/AuthScreen";
 import { AuthContext } from "../../context/AuthContext";
+import GoogleSignInButton from "./GoogleLogin";
 
 const EMAIL = "email";
 const PASSWORD = "password";
@@ -31,9 +32,9 @@ const RegisterScreen = ({ setScreen }: Props) => {
   const { register, handleSubmit, setValue } = useForm<iFormData>({
     mode: "onChange",
     defaultValues: {
-      email: "betsalel@gmail.com",
-      password: "123456789",
-      name: "betsalel",
+      email: "david@gmail.com",
+      password: "123456",
+      name: "david",
     },
   });
 
@@ -158,25 +159,18 @@ const RegisterScreen = ({ setScreen }: Props) => {
         </TouchableOpacity>
 
         <View style={{ marginTop: 2 }}>
-          <Button title="Register" onPress={handleSubmit(onSubmit)} />
+          <Button
+            title="Signup"
+            onPress={handleSubmit(onSubmit)}
+            disabled={isLoading}
+          />
         </View>
 
         {errMsg.msg && (
           <Text style={{ color: theme.colors.error }}>{errMsg.msg}</Text>
         )}
 
-        <TouchableOpacity
-          style={{
-            marginTop: 35,
-            borderWidth: 0.5,
-            borderRadius: 40,
-            padding: 7,
-            borderColor: theme.colors.primary,
-          }}
-          onPress={loginWithGoogle}
-        >
-          <Ionicons name="logo-google" size={35} color="#1679d3" />
-        </TouchableOpacity>
+        <GoogleSignInButton disabled={isLoading} />
       </View>
     </AuthBackground>
   );
@@ -189,7 +183,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   input: {
-    height: 25,
+    height: 55,
     width: 250,
     margin: 10,
     padding: 5,
