@@ -50,7 +50,7 @@ const AuthNavigationContainer = () => (
         name="Posts List"
         component={AllPostsScreen}
         options={{
-          title: "",
+          title: "Posts List",
           headerShown: false,
         }}
       />
@@ -58,7 +58,7 @@ const AuthNavigationContainer = () => (
         name="Chat Room"
         component={ChatScreen}
         options={{
-          title: "",
+          title: "Chat Room",
           headerShown: false,
         }}
       />
@@ -66,7 +66,7 @@ const AuthNavigationContainer = () => (
         name="Add Post"
         component={AddPostScreen}
         options={{
-          title: "",
+          title: "Add a new Post",
           headerShown: false,
         }}
       />
@@ -74,7 +74,7 @@ const AuthNavigationContainer = () => (
         name="My Profile"
         component={MyProfileScreen}
         options={{
-          title: "",
+          title: "My Profile",
           headerShown: false,
         }}
       />

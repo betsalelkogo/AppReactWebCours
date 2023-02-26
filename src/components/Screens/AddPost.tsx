@@ -1,190 +1,131 @@
-// import { Text, View } from "react-native";
-
-// const AddPostScreen = () => {
-//   return (
-//     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-//       <Text>Add Post</Text>
-//     </View>
-//   );
-// };
-
-// export default AddPostScreen;
-
-import { useState, FC, useEffect } from "react";
+import { useState } from "react";
 import {
+  Alert,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   View,
-  Image,
-  TouchableOpacity,
-  Button,
-  Alert,
-  TextInput,
-  ScrollView,
 } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
 
-import PostModel, { Post } from "../../model/PostModel";
-import * as ImagePicker from "expo-image-picker";
+import { TextInput } from "react-native-paper";
+import postApi from "../../api/PostApi";
+import { Post } from "../../utils/types/@Post";
+import { theme } from "../Core/theme";
+import Button from "../Shared/Button";
 
-const AddPost: FC<{ route: any; navigation: any }> = ({
-  route,
-  navigation,
-}) => {
-  console.log("My app is running");
-  const [text, setText] = useState<string>("");
-  const [userId, setUserId] = useState<string>("");
-  const [avatarUri, setAvatarUri] = useState<string>("");
+import AppImagePicker from "../Shared/ImagePicker";
+import Title from "../Shared/Header";
 
-  const askPermission = async () => {
-    try {
-      const res = await ImagePicker.getCameraPermissionsAsync();
-      if (!res.granted) {
-        alert("camera permission is requiered!");
-      }
-    } catch (err) {
-      console.log("ask permission error " + err);
-    }
-  };
-  useEffect(() => {
-    askPermission();
-  }, []);
+const AddPost = () => {
+  const [post, setPost] = useState<Post>({ text: "", image: "" });
 
-  const openCamera = async () => {
-    try {
-      const res = await ImagePicker.launchCameraAsync();
-      if (!res.canceled && res.assets.length > 0) {
-        const uri = res.assets[0].uri;
-        setAvatarUri(uri);
-      }
-    } catch (err) {
-      console.log("open camera error:" + err);
-    }
+  const [errorMsg, setErrorMsg] = useState<string>("");
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleResetForm = () => {
+    setPost({ text: "", image: "" });
   };
 
-  const openGallery = async () => {
-    try {
-      const res = await ImagePicker.launchImageLibraryAsync();
-      if (!res.canceled && res.assets.length > 0) {
-        const uri = res.assets[0].uri;
-        setAvatarUri(uri);
-      }
-    } catch (err) {
-      console.log("open camera error:" + err);
-    }
-  };
-
-  const onSaveCallback = async () => {
-    console.log("save button was pressed");
-    const post: Post = {
-      text: text,
-      image: "url",
-      _id: "d",
-      userId: userId,
-    };
-    try {
-      if (avatarUri != "") {
-        console.log("uploading image");
-        const url = await PostModel.uploadImage(avatarUri);
-        post.image = url;
-        console.log("got url from upload: " + url);
-      }
-      console.log("saving Post");
-    } catch (err) {
-      console.log("fail adding post: " + err);
+  const handleSubmitPost = async () => {
+    if (!post.text) {
+      setErrorMsg("Post description is required!");
+      return;
     }
 
-    navigation.goBack();
+    if (!post.image) {
+      setErrorMsg("Post image is required!");
+      return;
+    }
+    setIsLoading(true);
+
+    const res = await postApi.addPost({ text: post.text });
+    const newPostData: Post | any = res.data;
+    if (newPostData._id) {
+      const imageUrl = await postApi.uploadImage(post.image, newPostData._id);
+
+      if (imageUrl) {
+        const res = await postApi.editPost(newPostData._id, {
+          image: imageUrl,
+        });
+        const data: Post | any = res.data;
+
+        if (data._id) {
+          handleResetForm();
+          Alert.alert("New post created successfully!");
+        }
+      }
+    }
+
+    setIsLoading(false);
   };
 
-  const onCancellCallback = () => {
-    navigation.goBack();
+  const handleChange = (field: "text" | "image", value: string) => {
+    if (errorMsg) {
+      setErrorMsg("");
+    }
+
+    switch (field) {
+      case "image":
+        setPost((prevState) => ({ ...prevState, image: value }));
+        break;
+      case "text":
+        setPost((prevState) => ({ ...prevState, text: value }));
+        break;
+      default:
+        break;
+    }
   };
+
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View>
-          {avatarUri == "" && (
-            <Image
-              source={require("../../assets/post.png")}
-              style={styles.avatar}
-            ></Image>
-          )}
-          {avatarUri != "" && (
-            <Image source={{ uri: avatarUri }} style={styles.avatar}></Image>
-          )}
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Title>Add New Post</Title>
 
-          <TouchableOpacity onPress={openCamera}>
-            <Ionicons name={"camera"} style={styles.cameraButton} size={50} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={openGallery}>
-            <Ionicons name={"image"} style={styles.galleryButton} size={50} />
-          </TouchableOpacity>
-        </View>
-
-        <TextInput
-          style={styles.input}
-          onChangeText={setText}
-          value={text}
-          placeholder={"Your Post"}
+        <AppImagePicker
+          image={post.image || ""}
+          setImage={(image: string) => handleChange("image", image)}
+          previewSize={200}
+          disabled={isLoading}
         />
-        <View style={styles.buttonesContainer}>
-          <TouchableOpacity onPress={onCancellCallback} style={styles.button}>
-            <Text style={styles.buttonText}>CANCELL</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onSaveCallback} style={styles.button}>
-            <Text style={styles.buttonText}>SAVE</Text>
-          </TouchableOpacity>
+        {errorMsg && (
+          <Text style={{ color: "red", fontSize: 16 }}>{errorMsg}</Text>
+        )}
+        <TextInput
+          multiline
+          numberOfLines={5}
+          style={styles.input}
+          autoFocus={false}
+          label="Description"
+          value={post.text}
+          onChangeText={(value: string) => handleChange("text", value)}
+          disabled={isLoading}
+        />
+
+        <View style={{ marginTop: 6 }}>
+          <Button
+            title="Submit Post"
+            onPress={handleSubmitPost}
+            disabled={isLoading}
+            color={isLoading ? theme.colors.darkGrey : undefined}
+          />
         </View>
       </View>
-    </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  input: {
+    width: "70%",
+    height: 100,
+    backgroundColor: theme.colors.lightGrey,
+    borderColor: theme.colors.primary,
+    borderWidth: 2,
+  },
   container: {
     flex: 1,
-  },
-  avatar: {
-    height: 250,
-    resizeMode: "contain",
-    alignSelf: "center",
-    width: "100%",
-  },
-  cameraButton: {
-    position: "absolute",
-    bottom: -10,
-    left: 10,
-    width: 50,
-    height: 50,
-  },
-  galleryButton: {
-    position: "absolute",
-    bottom: -10,
-    right: 10,
-    width: 50,
-    height: 50,
-  },
-  input: {
-    height: 60,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonesContainer: {
-    flexDirection: "row",
-  },
-  button: {
-    flex: 1,
-    margin: 12,
-    padding: 12,
-    backgroundColor: "blue",
-    borderRadius: 10,
-  },
-  buttonText: {
-    textAlign: "center",
-    color: "white",
+    padding: 20,
   },
 });
 

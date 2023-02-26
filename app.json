@@ -34,6 +34,14 @@
       "eas": {
         "projectId": "48a905b9-1419-4484-afd2-3e6d80723630"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "ChatApp will accesses your photos, inorder to let you share them"
+        }
+      ]
+    ]
   }
 }

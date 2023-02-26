@@ -8,7 +8,7 @@ interface iSignup {
 }
 const signUpUser = async (data: iSignup) => {
   const { email, password, name } = data;
-  return apiClient.post(`/${URL_PATHS.auth}/register`, {
+  return apiClient.post(`/auth/register`, {
     email,
     password,
     name,
@@ -21,11 +21,11 @@ interface iSigin {
 }
 const signInUser = async (data: iSigin) => {
   const { email, password } = data;
-  return apiClient.post(`/${URL_PATHS.auth}/login`, { email, password });
+  return apiClient.post(`/auth/login`, { email, password });
 };
 
 const logoutUser = async (token: string) => {
-  return apiClient.get(`/${URL_PATHS.auth}/logout`, {
+  return apiClient.get(`/auth/logout`, {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -54,7 +54,7 @@ interface iGoogleSign {
 }
 const googleSignUser = async (data: iGoogleSign) => {
   const { email, name } = data;
-  return apiClient.post(`/${URL_PATHS.auth}/google-sign-user`, { email, name });
+  return apiClient.post(`/auth/google-sign-user`, { email, name });
 };
 
 export default {

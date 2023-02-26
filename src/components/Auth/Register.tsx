@@ -31,9 +31,9 @@ const RegisterScreen = ({ setScreen }: Props) => {
   const { register, handleSubmit, setValue } = useForm<iFormData>({
     mode: "onChange",
     defaultValues: {
-      email: "david@gmail.com",
-      password: "123456",
-      name: "david",
+      email: "betsalel@gmail.com",
+      password: "123456789",
+      name: "betsalel",
     },
   });
 
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   input: {
-    height: 55,
+    height: 25,
     width: 250,
     margin: 10,
     padding: 5,

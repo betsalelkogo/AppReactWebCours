@@ -1,41 +1,44 @@
+import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { Avatar } from "react-native-paper";
+
 import * as ImagePicker from "expo-image-picker";
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  Alert,
-  TextInput,
-  ScrollView,
-} from "react-native";
-
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useEffect } from "react";
+
+import { theme } from "../Core/theme";
 
 interface Props {
   setImage: (image: string) => void;
   image: string;
+  previewSize?: number;
+  disabled?: boolean;
 }
 
-const AppImagePicker = ({ image, setImage }: Props) => {
+const AppImagePicker = ({
+  image,
+  setImage,
+  previewSize = 110,
+  disabled,
+}: Props) => {
+  const [status, requestPermission] = ImagePicker.useCameraPermissions();
+
   const askPermission = async () => {
     try {
-      const res = await ImagePicker.getCameraPermissionsAsync();
+      const res = await requestPermission();
       if (!res.granted) {
-        alert("camera permission is requiered!");
+        alert("If you want to take a picture, camera permsission is required.");
       }
     } catch (err) {
       console.log("ask permission error " + err);
     }
   };
-  useEffect(() => {
-    askPermission();
-  }, []);
 
   const openCamera = async () => {
     try {
+      if (!status?.granted) {
+        await askPermission();
+      }
+
       const res = await ImagePicker.launchCameraAsync();
       if (!res.canceled && res.assets.length > 0) {
         const uri = res.assets[0].uri;
@@ -58,41 +61,30 @@ const AppImagePicker = ({ image, setImage }: Props) => {
     }
   };
 
-  const onSaveCallback = async () => {
-    console.log("save button was pressed");
-
-    try {
-      if (image != "") {
-        console.log("uploading image");
-        // const url = await StudentModel.uploadImage(image)
-        // student.image = url
-        // console.log("got url from upload: " + url)
-      }
-      console.log("saving stundet");
-      // await StudentModel.addStudent(student)
-    } catch (err) {
-      console.log("fail adding studnet: " + err);
-    }
-  };
-
   return (
     <>
-      <View>
-        {image == "" && (
-          <Image
-            source={require("../../../assets/ava.png")}
-            style={styles.avatar}
-          ></Image>
-        )}
-        {image != "" && (
-          <Image source={{ uri: image }} style={styles.avatar}></Image>
-        )}
+      <Avatar.Image
+        source={image ? { uri: image } : require("../../assets/avatar.png")}
+        size={previewSize}
+      />
 
-        <TouchableOpacity onPress={openCamera}>
-          <Ionicons name={"camera"} style={styles.cameraButton} size={50} />
+      <View style={styles.iconContainer}>
+        <TouchableOpacity onPress={openCamera} disabled={disabled}>
+          <Ionicons
+            name="camera"
+            style={styles.icon}
+            size={50}
+            color={disabled ? theme.colors.darkGrey : theme.colors.primary}
+          />
         </TouchableOpacity>
-        <TouchableOpacity onPress={openGallery}>
-          <Ionicons name={"image"} style={styles.galleryButton} size={50} />
+
+        <TouchableOpacity onPress={openGallery} disabled={disabled}>
+          <Ionicons
+            name="image"
+            style={styles.icon}
+            size={50}
+            color={disabled ? theme.colors.darkGrey : theme.colors.primary}
+          />
         </TouchableOpacity>
       </View>
     </>
@@ -103,25 +95,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  iconContainer: {
+    flexDirection: "row",
+  },
   avatar: {
     height: 250,
     resizeMode: "contain",
     alignSelf: "center",
     width: "100%",
   },
-  cameraButton: {
-    position: "absolute",
-    bottom: -10,
-    left: 10,
-    width: 50,
-    height: 50,
-  },
-  galleryButton: {
-    position: "absolute",
-    bottom: -10,
-    right: 10,
-    width: 50,
-    height: 50,
+  icon: {
+    margin: 4,
   },
 });
 

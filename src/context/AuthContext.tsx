@@ -1,12 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
 import authApi from "../api/AuthApi";
+import apiClient from "../api/ClientApi";
+import userApi from "../api/UserApi";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../utils/constants";
+import { Post } from "../utils/types/@Post";
 import { User } from "../utils/types/@User";
 
 type UserInfo = {
   accessToken: string;
   refreshToken: string;
+  id: string;
 };
 
 type AuthContextType = {
@@ -20,15 +24,19 @@ type AuthContextType = {
   ) => Promise<true | string> | null;
   login: (email: string, password: string) => Promise<true | string> | null;
   logout: () => void;
-  currentUser?: User;
+  getUserInfo: (id: string) => void;
+  googleSignin: (accessToken: string) => Promise<boolean> | null;
+  userData?: User;
 };
 
 export const AuthContext = createContext<AuthContextType>({
   isLoading: false,
-  userInfo: { accessToken: "", refreshToken: "" },
+  userInfo: { accessToken: "", refreshToken: "", id: "" },
   splashLoading: false,
   register: (email: string, password: string, name: string) => null,
   login: (email: string, password: string) => null,
+  googleSignin: () => null,
+  getUserInfo: () => null,
   logout: () => {},
 });
 
@@ -36,9 +44,14 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
   const [userInfo, setUserInfo] = useState<UserInfo>({
     accessToken: "",
     refreshToken: "",
+    id: "",
   });
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [splashLoading, setSplashLoading] = useState<boolean>(false);
+
+  const [userData, setUserData] = useState<User>();
 
   const register = async (
     email: string,
@@ -46,9 +59,7 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
     name: string
   ): Promise<true | string> => {
     setIsLoading(true);
-    console.log("register");
     const res = await authApi.signUpUser({ email, password, name });
-    console.log(("register" + res.data) as string);
 
     const data: any = res?.data;
     if (data?.err) {
@@ -61,23 +72,39 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
   };
 
   const login = async (email: string, password: string) => {
+    console.log("Login");
     setIsLoading(true);
     const res = await authApi.signInUser({ email, password });
 
-    const data: any = res.data;
+    const data: UserInfo | any = res.data;
 
     if (data.err) {
       setIsLoading(false);
+
       return data.err as string;
     }
-    const { accessToken, refreshToken } = data;
 
-    await AsyncStorage.setItem(ACCESS_TOKEN, accessToken);
-    await AsyncStorage.setItem(REFRESH_TOKEN, refreshToken);
-
-    setUserInfo({ accessToken, refreshToken });
+    await createUserSession(data);
 
     setIsLoading(false);
+    return true;
+  };
+
+  const googleSignin = async (googleToken: string) => {
+    const userInfo = await authApi.fetchUserInfo(googleToken);
+
+    const res = await authApi.googleSignUser({
+      email: userInfo.email,
+      name: userInfo.given_name,
+      avatar: userInfo.picture,
+    });
+
+    const data: UserInfo | any = res.data;
+    console.log(data);
+    if (!data.err) {
+      await createUserSession(data);
+    }
+
     return true;
   };
 
@@ -91,7 +118,7 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
     ]);
 
     setIsLoading(false);
-    setUserInfo({ accessToken: "", refreshToken: "" });
+    setUserInfo({ accessToken: "", refreshToken: "", id: "" });
   };
 
   const isLoggedIn = async () => {
@@ -103,6 +130,7 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
 
       if (userInfo) {
         setUserInfo(userInfo);
+        apiClient.setHeader("Authorization", `Bearer ${userInfo.accessToken}`);
       }
 
       setSplashLoading(false);
@@ -110,6 +138,24 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
       setSplashLoading(false);
       console.log(`is logged in error ${e}`);
     }
+  };
+
+  const getUserInfo = async (userId: string) => {
+    const res = await userApi.getUser(userId);
+    setUserData(res.data as User);
+  };
+
+  const createUserSession = async (data: UserInfo) => {
+    const [userRes] = await Promise.all([
+      userApi.getUser(data.id),
+      AsyncStorage.setItem(ACCESS_TOKEN, data.accessToken),
+      AsyncStorage.setItem(REFRESH_TOKEN, data.refreshToken),
+    ]);
+    const userData = userRes.data;
+    setUserData(userData as User);
+    setUserInfo(data);
+
+    apiClient.setHeader("Authorization", `Bearer ${data.accessToken}`);
   };
 
   useEffect(() => {
@@ -125,6 +171,9 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
         register,
         login,
         logout,
+        getUserInfo,
+        googleSignin,
+        userData,
       }}
     >
       {children}

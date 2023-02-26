@@ -1,21 +1,27 @@
 import React from "react";
-import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ButtonProps,
+  TouchableOpacityProps,
+} from "react-native";
 import { theme } from "../Core/theme";
 
 interface Props {
-  onPress: () => void;
   title: string;
   color?: string;
 }
 
-const Button = ({ color, onPress, title }: Props) => {
+const Button = ({ color, title, ...props }: Props & TouchableOpacityProps) => {
   return (
     <TouchableOpacity
+      {...props}
       style={[
         styles.button,
-        { backgroundColor: "#1679d3" || theme.colors.primary },
+        { backgroundColor: color || theme.colors.primary },
+        props.style,
       ]}
-      onPress={onPress}
     >
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
@@ -30,7 +36,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: "#1679d3",
   },
   text: {
     fontSize: 16,
