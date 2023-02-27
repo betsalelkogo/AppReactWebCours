@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     margin: 4,
+    color: "black",
   },
 });
 

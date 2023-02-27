@@ -36,12 +36,10 @@ const AllPostsScreen = ({ navigation }: Props) => {
     setIsLoading(true);
     const res = await postApi.getAllPosts();
     setIsLoading(false);
-
     if (Array.isArray(res.data)) {
       setAllPosts(res.data as Post[]);
       return res.data as Post[];
     }
-
     return [];
   };
 

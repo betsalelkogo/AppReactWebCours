@@ -32,9 +32,9 @@ const RegisterScreen = ({ setScreen }: Props) => {
   const { register, handleSubmit, setValue } = useForm<iFormData>({
     mode: "onChange",
     defaultValues: {
-      email: "david@gmail.com",
-      password: "123456",
-      name: "david",
+      email: "betsalel@gmail.com",
+      password: "12345678",
+      name: "Betsalel",
     },
   });
 
@@ -62,9 +62,9 @@ const RegisterScreen = ({ setScreen }: Props) => {
       setErrMsg({ field: NAME, msg: "Required field" });
       return;
     }
-
+    console.log("register");
     const success = await registerUser(email, password, name);
-
+    console.log("register" + success);
     if (success !== true) {
       setErrMsg({ field: "", msg: success || "" });
     } else {
@@ -98,7 +98,6 @@ const RegisterScreen = ({ setScreen }: Props) => {
         <TextInput
           keyboardType="default"
           placeholder="Name"
-          label="Name"
           onChangeText={onChangeField("name")}
           style={[
             styles.input,
@@ -114,7 +113,6 @@ const RegisterScreen = ({ setScreen }: Props) => {
           keyboardType="email-address"
           textContentType="emailAddress"
           placeholder="Email"
-          label="Email"
           onChangeText={onChangeField("email")}
           style={[
             styles.input,
@@ -127,7 +125,6 @@ const RegisterScreen = ({ setScreen }: Props) => {
 
         <TextInput
           secureTextEntry
-          label="Password"
           style={[
             styles.input,
             {
@@ -140,28 +137,17 @@ const RegisterScreen = ({ setScreen }: Props) => {
           onChangeText={onChangeField("password")}
         />
 
-        <TouchableOpacity
-          style={{ marginBottom: 4 }}
-          onPress={() => setScreen("LOGIN")}
-        >
-          <Text style={{ color: "gray", fontSize: 11 }}>
-            Already have an account?{" "}
-            <Text
-              style={{
-                fontSize: 11,
-                color: theme.colors.primary,
-                textDecorationLine: "underline",
-              }}
-            >
-              Login here
-            </Text>
-          </Text>
-        </TouchableOpacity>
-
         <View style={{ marginTop: 2 }}>
           <Button
-            title="Signup"
+            title="Sign Up"
             onPress={handleSubmit(onSubmit)}
+            disabled={isLoading}
+          />
+        </View>
+        <View style={{ marginTop: 2 }}>
+          <Button
+            title="Sign In"
+            onPress={() => setScreen("LOGIN")}
             disabled={isLoading}
           />
         </View>
@@ -183,7 +169,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   input: {
-    height: 55,
+    height: 30,
     width: 250,
     margin: 10,
     padding: 5,

@@ -77,7 +77,7 @@ const LoginScreen = ({ setScreen }: Props) => {
       <Spinner visible={isLoading} />
       <View style={styles.container}>
         <AppLogo />
-        <Title>Hello, Welcome Back!</Title>
+        <Title>Welcome To Live Chat</Title>
         <TextInput
           autoComplete="email"
           keyboardType="email-address"
@@ -106,29 +106,17 @@ const LoginScreen = ({ setScreen }: Props) => {
           placeholder="Password"
           onChangeText={onChangeField("password")}
         />
-
-        <TouchableOpacity
-          style={{ marginBottom: 4 }}
-          onPress={() => setScreen("REGISTER")}
-        >
-          <Text style={{ color: "gray", fontSize: 11 }}>
-            Doesn't have an account?{" "}
-            <Text
-              style={{
-                fontSize: 11,
-                color: theme.colors.primary,
-                textDecorationLine: "underline",
-              }}
-            >
-              Sign Up here
-            </Text>
-          </Text>
-        </TouchableOpacity>
-
         <View style={{ marginTop: 2 }}>
           <Button
-            title="Login"
+            title="Sign In"
             onPress={handleSubmit(onSubmit)}
+            disabled={isLoading}
+          />
+        </View>
+        <View style={{ marginTop: 4 }}>
+          <Button
+            title="Sign Up"
+            onPress={() => setScreen("REGISTER")}
             disabled={isLoading}
           />
         </View>
@@ -149,7 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   input: {
-    height: 55,
+    height: 30,
     width: 250,
     margin: 10,
     padding: 5,

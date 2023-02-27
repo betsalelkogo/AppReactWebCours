@@ -20,10 +20,7 @@ const PostItem = ({ isOwner, post, handleEdit }: Props) => {
 
   return (
     <View style={styles.container}>
-      <PostOwnerInfo
-        avatar={post.owner?.avatarUrl || ""}
-        name={post.owner?.name || ""}
-      />
+      <PostOwnerInfo name={post.owner?.name || ""} />
       <View style={{ alignItems: "center" }}>
         <PostInfo
           text={text}

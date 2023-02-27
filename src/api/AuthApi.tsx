@@ -7,7 +7,8 @@ interface iSignup {
 }
 const signUpUser = async (data: iSignup) => {
   const { email, password, name } = data;
-  return apiClient.post(`/auth/register`, {
+  console.log("signUpUser");
+  return apiClient.post("/auth/register", {
     email,
     password,
     name,

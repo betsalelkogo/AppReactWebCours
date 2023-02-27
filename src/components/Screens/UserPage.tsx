@@ -19,6 +19,7 @@ import AppLoading from "../Shared/AppLoading";
 import AppImagePicker from "../Shared/ImagePicker";
 import AllPosts from "../Post/PostsList";
 import PostApi from "../../api/PostApi";
+import UserImagePicker from "../Shared/ImagePickerUser";
 
 const MyProfileScreen: FC<{ route: any; navigation: any }> = ({
   route,
@@ -37,6 +38,7 @@ const MyProfileScreen: FC<{ route: any; navigation: any }> = ({
   const [image, setImage] = useState<string>(userData?.avatarUrl || "");
 
   const [editName, setEditName] = useState<string>(userData?.name || "");
+  const [editEmail, setEditEmail] = useState<string>(userData?.email || "");
 
   const [errMsg, setErrMsg] = useState<string>("");
 
@@ -71,7 +73,7 @@ const MyProfileScreen: FC<{ route: any; navigation: any }> = ({
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.infoContainer}>
-        <AppImagePicker
+        <UserImagePicker
           image={image}
           setImage={(image: string) => setImage(image)}
           hideBtns={!editMode}
@@ -79,23 +81,26 @@ const MyProfileScreen: FC<{ route: any; navigation: any }> = ({
         />
 
         {editMode ? (
-          <TextInput
-            label="Name"
-            value={editName}
-            onChangeText={(text) => setEditName(text)}
-            style={styles.textInput}
-            disabled={isLoading}
-          />
+          <View style={{ alignContent: "center", marginTop: 10 }}>
+            <TextInput
+              value={editName}
+              onChangeText={(text) => setEditName(text)}
+              style={styles.textInput}
+              disabled={isLoading}
+            />
+            <TextInput
+              value={editEmail}
+              onChangeText={(text) => setEditEmail(text)}
+              style={styles.textInput}
+              disabled={isLoading}
+            />
+          </View>
         ) : (
-          <Text>Hi, {userData?.name || ""}</Text>
+          <View style={{ alignContent: "center", marginTop: 10 }}>
+            <Text>User Name: {userData?.name || ""}</Text>
+            <Text>User Email: {userData?.email || ""}</Text>
+          </View>
         )}
-        <View style={{ alignContent: "center", marginTop: 10 }}>
-          <Badge>{userData?.posts.length || 0}</Badge>
-        </View>
-
-        <Text style={{ color: theme.colors.caption, fontSize: 11 }}>
-          Posts Number
-        </Text>
         {errMsg && <Text style={{ color: theme.colors.error }}>{errMsg}</Text>}
         <View style={styles.btnContainer}>
           <Button
@@ -105,7 +110,7 @@ const MyProfileScreen: FC<{ route: any; navigation: any }> = ({
             color={isLoading ? theme.colors.darkGrey : undefined}
           />
           <Button
-            title={editMode ? "Submit" : "Edit Details"}
+            title={editMode ? "Save" : "Edit User"}
             onPress={() => {
               if (editMode) {
                 handleEditUser();

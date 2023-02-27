@@ -63,6 +63,7 @@ export const AuthProvider: React.FC<{ children: any }> = ({ children }) => {
     name: string
   ): Promise<true | string> => {
     setIsLoading(true);
+    console.log("register auth context" + email, password, name);
     const res = await authApi.signUpUser({ email, password, name });
 
     const data: any = res?.data;

@@ -51,15 +51,7 @@ const AuthNavigationContainer = () => (
         component={AllPostsScreen}
         options={{
           title: "Posts List",
-          headerShown: false,
-        }}
-      />
-      <Tab.Screen
-        name={"Chat Room"}
-        component={ChatScreen}
-        options={{
-          title: "Chat Room",
-          headerShown: false,
+          headerShown: true,
         }}
       />
       <Tab.Screen
@@ -67,7 +59,15 @@ const AuthNavigationContainer = () => (
         component={AddPostScreen}
         options={{
           title: "Add Post",
-          headerShown: false,
+          headerShown: true,
+        }}
+      />
+      <Tab.Screen
+        name={"Chat Room"}
+        component={ChatScreen}
+        options={{
+          title: "Chat Room",
+          headerShown: true,
         }}
       />
       <Tab.Screen
@@ -75,7 +75,7 @@ const AuthNavigationContainer = () => (
         component={MyProfileScreen}
         options={{
           title: "User Page",
-          headerShown: false,
+          headerShown: true,
         }}
       />
     </Tab.Navigator>

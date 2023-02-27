@@ -4,6 +4,7 @@ export interface Post {
   image?: string;
   userId?: string;
   owner?: PostOnwer;
+  delete?: false;
 }
 
 export interface PostOnwer {
@@ -11,9 +12,11 @@ export interface PostOnwer {
   email: string;
   avatarUrl: string;
   _id: string;
+  delete?: false;
 }
 
 export interface iEditPost {
   text?: string;
   image?: string;
+  delete?: true;
 }

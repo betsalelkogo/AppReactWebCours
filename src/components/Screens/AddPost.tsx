@@ -18,9 +18,10 @@ import Title from "../Shared/Header";
 
 interface Props {
   route: any;
+  navigation: any;
 }
 
-const AddEditPostScreen = ({ route }: Props) => {
+const AddEditPostScreen = ({ route, navigation }: Props) => {
   const [post, setPost] = useState<Post>({ text: "", image: "" });
 
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -31,6 +32,7 @@ const AddEditPostScreen = ({ route }: Props) => {
 
   const handleResetForm = () => {
     setPost({ text: "", image: "" });
+    setExistingPostId(false);
   };
 
   const handleSubmitPost = async () => {
@@ -47,11 +49,39 @@ const AddEditPostScreen = ({ route }: Props) => {
 
     if (existingPostId) {
       await handleEditPost();
+      navigation.navigate("Posts List");
     } else {
       await handleCreatePost();
+      navigation.navigate("Posts List");
     }
 
     setIsLoading(false);
+  };
+  const handleCancelPost = async () => {
+    setIsLoading(true);
+    if (existingPostId) {
+      await handleDeletePost();
+      navigation.navigate("Posts List");
+    } else {
+      Alert.alert("Cancel!");
+      navigation.navigate("Posts List");
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleDeletePost = async () => {
+    if (existingPostId) {
+      const res = await postApi.editPost(existingPostId, {
+        delete: true,
+      });
+      const data: Post | any = res.data;
+
+      if (data._id) {
+        handleResetForm();
+        Alert.alert("Post was deleted successfully!");
+      }
+    }
   };
   const handleEditPost = async () => {
     if (existingPostId) {
@@ -68,7 +98,8 @@ const AddEditPostScreen = ({ route }: Props) => {
 
         if (data._id) {
           handleResetForm();
-          Alert.alert("New post created successfully!");
+          Alert.alert("Post was updated successfully!");
+          navigation.navigate("Posts List");
         }
       }
     }
@@ -77,13 +108,16 @@ const AddEditPostScreen = ({ route }: Props) => {
   const handleCreatePost = async () => {
     const res = await postApi.addPost({ text: post.text });
     const newPostData: Post | any = res.data;
+    console.log("Creat Post" + newPostData._id);
     if (newPostData._id) {
+      console.log("Creat Post1");
       const imageUrl = await postApi.uploadImage(
         post.image || "",
         newPostData._id
       );
 
       if (imageUrl) {
+        console.log("Creat Post2");
         const res = await postApi.editPost(newPostData._id, {
           image: imageUrl,
         });
@@ -91,7 +125,9 @@ const AddEditPostScreen = ({ route }: Props) => {
 
         if (data._id) {
           handleResetForm();
-          Alert.alert("New post created successfully!");
+          Alert.alert("Post created successfully!");
+        } else {
+          Alert.alert("Post not created!");
         }
       }
     }
@@ -140,7 +176,7 @@ const AddEditPostScreen = ({ route }: Props) => {
         <AppImagePicker
           image={post.image || ""}
           setImage={(image: string) => handleChange("image", image)}
-          previewSize={200}
+          previewSize={250}
           disabled={isLoading}
         />
         {errorMsg && (
@@ -151,7 +187,7 @@ const AddEditPostScreen = ({ route }: Props) => {
           numberOfLines={5}
           style={styles.input}
           autoFocus={false}
-          label="Description"
+          placeholder="Your Post..."
           value={post.text}
           onChangeText={(value: string) => handleChange("text", value)}
           disabled={isLoading}
@@ -161,6 +197,14 @@ const AddEditPostScreen = ({ route }: Props) => {
           <Button
             title={existingPostId ? "Edit Post" : "Submit Post"}
             onPress={handleSubmitPost}
+            disabled={isLoading}
+            color={isLoading ? theme.colors.darkGrey : undefined}
+          />
+        </View>
+        <View style={{ marginTop: 6 }}>
+          <Button
+            title={existingPostId ? "Delete Post" : "Cancel"}
+            onPress={handleCancelPost}
             disabled={isLoading}
             color={isLoading ? theme.colors.darkGrey : undefined}
           />

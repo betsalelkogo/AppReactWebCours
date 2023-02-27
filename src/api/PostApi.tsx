@@ -11,7 +11,7 @@ const getPostById = async (postId: string) => {
 };
 
 const addPost = async (newPost: Post) => {
-  return apiClient.post(`/post/`, newPost);
+  return apiClient.post("/post/", newPost);
 };
 
 const editPost = async (postId: string, editedPost: iEditPost) => {
