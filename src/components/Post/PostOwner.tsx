@@ -10,7 +10,7 @@ const PostOwnerInfo = ({ avatar, name }: Props) => (
   <View style={styles.container}>
     <Avatar.Image
       size={42}
-      source={avatar ? { uri: avatar } : require("../../assets/avatar.png")}
+      source={avatar ? { uri: avatar } : require("../../assets/post.png")}
     />
     <Text style={styles.text}>{name}</Text>
   </View>

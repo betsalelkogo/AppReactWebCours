@@ -31,33 +31,35 @@ const ForgetPasswordScreen = ({ setScreen }: Props) => {
 
   const [errMsg, setErrMsg] = useState<iErrMsg>({ field: "", msg: "" });
 
-  const onSubmit = useCallback(async (formData: any) => {
-    const { email, password } = formData;
+  const onSubmit = useCallback(
+    async (formData: { email: string; password: string }) => {
+      const { email, password } = formData;
 
-    if (!email) {
-      setErrMsg({ field: EMAIL, msg: "Required field" });
-      return;
-    }
-    if (!password) {
-      setErrMsg({ field: PASSWORD, msg: "Required field" });
-      return;
-    }
+      if (!email) {
+        setErrMsg({ field: EMAIL, msg: "Required field" });
+        return;
+      }
+      if (!password) {
+        setErrMsg({ field: PASSWORD, msg: "Required field" });
+        return;
+      }
 
-    if (!isEmailValid(email)) {
-      setErrMsg({ field: EMAIL, msg: "Email is not valid" });
-      return;
-    }
+      if (!isEmailValid(email)) {
+        setErrMsg({ field: EMAIL, msg: "Email is not valid" });
+        return;
+      }
 
-    const res = await authApi.signInUser({ email, password });
-    const data: any = res.data;
-    if (data.err) {
-      setErrMsg({ field: "", msg: data.err });
-    }
-    console.log(res.data);
-  }, []);
+      const res = await authApi.signInUser({ email, password });
+      const data: any = res.data;
+      if (data.err) {
+        setErrMsg({ field: "", msg: data.err });
+      }
+    },
+    []
+  );
 
   const onChangeField = useCallback(
-    (name: any) => (text: any) => {
+    (name: string) => (text: string) => {
       setValue(name, text);
     },
     []
@@ -74,12 +76,13 @@ const ForgetPasswordScreen = ({ setScreen }: Props) => {
     <AuthBackground>
       <View style={styles.container}>
         <AppLogo />
-        <Title text="Hello, Welcome to ChatAPP" />
+        <Title>Hello, Welcome Back!</Title>
         <TextInput
           autoComplete="email"
           keyboardType="email-address"
           textContentType="emailAddress"
           placeholder="Email"
+          label="Email"
           onChangeText={onChangeField("email")}
           style={[
             styles.input,
@@ -119,7 +122,7 @@ const ForgetPasswordScreen = ({ setScreen }: Props) => {
           </Text>
         </TouchableOpacity>
         <View style={{ marginTop: 2 }}>
-          <Button title="Login" onPress={handleSubmit(onSubmit)} />
+          <Button title="Login" onPress={handleSubmit(() => onSubmit)} />
         </View>
 
         {errMsg.msg && (
@@ -136,7 +139,7 @@ const ForgetPasswordScreen = ({ setScreen }: Props) => {
           }}
           onPress={loginWithGoogle}
         >
-          <Ionicons name="logo-google" size={35} color="#1679d3" />
+          <Ionicons name="logo-google" size={35} color="#f4c20d" />
         </TouchableOpacity>
       </View>
     </AuthBackground>

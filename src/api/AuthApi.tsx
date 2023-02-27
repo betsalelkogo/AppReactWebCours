@@ -47,13 +47,14 @@ const fetchUserInfo = async (accessToken: string) => {
   return await response.json();
 };
 
-interface iGoogleSign {
+export interface iGoogleSign {
   email: string;
   name: string;
+  avatar: string;
 }
 const googleSignUser = async (data: iGoogleSign) => {
-  const { email, name } = data;
-  return apiClient.post(`/auth/google-sign-user`, { email, name });
+  const { avatar, email, name } = data;
+  return apiClient.post(`/auth/google-sign-user`, { avatar, email, name });
 };
 
 export default {

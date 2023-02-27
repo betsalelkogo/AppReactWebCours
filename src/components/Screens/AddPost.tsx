@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -16,10 +16,16 @@ import Button from "../Shared/Button";
 import AppImagePicker from "../Shared/ImagePicker";
 import Title from "../Shared/Header";
 
-const AddPostScreen = () => {
+interface Props {
+  route: any;
+}
+
+const AddEditPostScreen = ({ route }: Props) => {
   const [post, setPost] = useState<Post>({ text: "", image: "" });
 
   const [errorMsg, setErrorMsg] = useState<string>("");
+
+  const [existingPostId, setExistingPostId] = useState<false | string>(false);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -39,10 +45,43 @@ const AddPostScreen = () => {
     }
     setIsLoading(true);
 
+    if (existingPostId) {
+      await handleEditPost();
+    } else {
+      await handleCreatePost();
+    }
+
+    setIsLoading(false);
+  };
+  const handleEditPost = async () => {
+    if (existingPostId) {
+      const imageUrl = await postApi.uploadImage(
+        post.image || "",
+        existingPostId
+      );
+      if (imageUrl) {
+        const res = await postApi.editPost(existingPostId, {
+          image: imageUrl,
+          text: post.text,
+        });
+        const data: Post | any = res.data;
+
+        if (data._id) {
+          handleResetForm();
+          Alert.alert("New post created successfully!");
+        }
+      }
+    }
+  };
+
+  const handleCreatePost = async () => {
     const res = await postApi.addPost({ text: post.text });
     const newPostData: Post | any = res.data;
     if (newPostData._id) {
-      const imageUrl = await postApi.uploadImage(post.image);
+      const imageUrl = await postApi.uploadImage(
+        post.image || "",
+        newPostData._id
+      );
 
       if (imageUrl) {
         const res = await postApi.editPost(newPostData._id, {
@@ -56,15 +95,12 @@ const AddPostScreen = () => {
         }
       }
     }
-
-    setIsLoading(false);
   };
 
   const handleChange = (field: "text" | "image", value: string) => {
     if (errorMsg) {
       setErrorMsg("");
     }
-
     switch (field) {
       case "image":
         setPost((prevState) => ({ ...prevState, image: value }));
@@ -77,10 +113,29 @@ const AddPostScreen = () => {
     }
   };
 
+  const handleGetPost = async () => {
+    if (route?.params) {
+      const { postId } = route.params;
+
+      const res = await postApi.getPostById(postId);
+      if (res.data) {
+        const postData = res.data as Post;
+        if (postData.image && postData.text && postData._id) {
+          setPost({ image: postData?.image || "", text: postData?.text || "" });
+          setExistingPostId(postData._id);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleGetPost();
+  }, [route.params]);
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Title>Add New Post</Title>
+        <Title>{existingPostId ? "Edit Post" : "Add New Post"}</Title>
 
         <AppImagePicker
           image={post.image || ""}
@@ -104,7 +159,7 @@ const AddPostScreen = () => {
 
         <View style={{ marginTop: 6 }}>
           <Button
-            title="Submit Post"
+            title={existingPostId ? "Edit Post" : "Submit Post"}
             onPress={handleSubmitPost}
             disabled={isLoading}
             color={isLoading ? theme.colors.darkGrey : undefined}
@@ -129,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddPostScreen;
+export default AddEditPostScreen;

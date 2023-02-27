@@ -12,15 +12,13 @@ interface Props {
   image: string;
   previewSize?: number;
   disabled?: boolean;
-  hideBtns?: boolean;
 }
 
-const AppImagePicker = ({
+const UserImagePicker = ({
   image,
   setImage,
   previewSize = 110,
   disabled,
-  hideBtns,
 }: Props) => {
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
@@ -30,7 +28,9 @@ const AppImagePicker = ({
       if (!res.granted) {
         alert("If you want to take a picture, camera permsission is required.");
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log("ask permission error " + err);
+    }
   };
 
   const openCamera = async () => {
@@ -44,7 +44,9 @@ const AppImagePicker = ({
         const uri = res.assets[0].uri;
         setImage(uri);
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log("open camera error:" + err);
+    }
   };
 
   const openGallery = async () => {
@@ -54,37 +56,37 @@ const AppImagePicker = ({
         const uri = res.assets[0].uri;
         setImage(uri);
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log("open camera error:" + err);
+    }
   };
 
   return (
     <>
       <Avatar.Image
-        source={image ? { uri: image } : require("../../assets/post.png")}
+        source={image ? { uri: image } : require("../../assets/avatar.png")}
         size={previewSize}
       />
 
-      {!hideBtns && (
-        <View style={styles.iconContainer}>
-          <TouchableOpacity onPress={openCamera} disabled={disabled}>
-            <Ionicons
-              name="camera"
-              style={styles.icon}
-              size={50}
-              color={disabled ? theme.colors.darkGrey : theme.colors.primary}
-            />
-          </TouchableOpacity>
+      <View style={styles.iconContainer}>
+        <TouchableOpacity onPress={openCamera} disabled={disabled}>
+          <Ionicons
+            name="camera"
+            style={styles.icon}
+            size={50}
+            color={disabled ? theme.colors.darkGrey : theme.colors.primary}
+          />
+        </TouchableOpacity>
 
-          <TouchableOpacity onPress={openGallery} disabled={disabled}>
-            <Ionicons
-              name="image"
-              style={styles.icon}
-              size={50}
-              color={disabled ? theme.colors.darkGrey : theme.colors.primary}
-            />
-          </TouchableOpacity>
-        </View>
-      )}
+        <TouchableOpacity onPress={openGallery} disabled={disabled}>
+          <Ionicons
+            name="image"
+            style={styles.icon}
+            size={50}
+            color={disabled ? theme.colors.darkGrey : theme.colors.primary}
+          />
+        </TouchableOpacity>
+      </View>
     </>
   );
 };
@@ -103,8 +105,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   icon: {
-    margin: 4,
+    margin: 5,
   },
 });
 
-export default AppImagePicker;
+export default UserImagePicker;

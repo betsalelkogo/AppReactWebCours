@@ -29,6 +29,15 @@ const GoogleSignInButton = ({ disabled }: Props) => {
 
   const logGoogleUser = async (accessToken: string): Promise<boolean> => {
     return (await googleSignin(accessToken)) || false;
+
+    // const userInfo = await authApi.fetchUserInfo(accessToken);
+    // console.log(userInfo);
+    // const res = await authApi.googleSignUser({ email: userInfo.email, name: userInfo.given_name, avatar: userInfo.picture });
+
+    // if(res.data.status === 200) {
+    // write user to the AuthContext
+    // }
+    return true;
   };
 
   useEffect(() => {
