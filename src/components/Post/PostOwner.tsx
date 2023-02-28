@@ -3,10 +3,15 @@ import { Avatar, Text } from "react-native-paper";
 
 interface Props {
   name: string;
+  avatar: string;
 }
 
-const PostOwnerInfo = ({ name }: Props) => (
+const PostOwnerInfo = ({ name, avatar }: Props) => (
   <View style={styles.container}>
+    <Avatar.Image
+      size={42}
+      source={avatar ? { uri: avatar } : require("../../assets/avatar.png")}
+    />
     <Text style={styles.text}>User Name posted: {name}</Text>
   </View>
 );

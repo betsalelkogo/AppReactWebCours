@@ -20,12 +20,11 @@ const AllPosts = ({ navToCreatePost, posts, title }: Props) => {
   const { userInfo } = useContext(AuthContext);
 
   const noPosts = !posts || posts?.length === 0;
-
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>
       {noPosts ? (
         <View style={{ alignItems: "center" }}>
-          <Title>No posts yet...</Title>
+          <Title>You dont have any posts yet!</Title>
           <LottieAnimation />
           <Button onPress={() => navToCreatePost()} title="Add Post Now" />
         </View>

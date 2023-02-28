@@ -17,6 +17,10 @@ const addPost = async (newPost: Post) => {
 const editPost = async (postId: string, editedPost: iEditPost) => {
   return apiClient.put(`/post/${postId}`, editedPost);
 };
+const deletePost = async (postId: string, editedPost: iEditPost) => {
+  console.log("Delete Post API");
+  return apiClient.delete(`/post/delete-post/${postId}`, editedPost);
+};
 
 const uploadImage = async (
   imageURI: string,
@@ -49,4 +53,5 @@ export default {
   uploadImage,
   getPostById,
   editPost,
+  deletePost,
 };

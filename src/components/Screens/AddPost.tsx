@@ -72,11 +72,12 @@ const AddEditPostScreen = ({ route, navigation }: Props) => {
 
   const handleDeletePost = async () => {
     if (existingPostId) {
-      const res = await postApi.editPost(existingPostId, {
+      console.log("Delete Post");
+      const res = await postApi.deletePost(existingPostId, {
         delete: true,
       });
       const data: Post | any = res.data;
-
+      console.log(res.ok, data._id);
       if (data._id) {
         handleResetForm();
         Alert.alert("Post was deleted successfully!");
